@@ -7,6 +7,10 @@
 #' @export
 
 loadRData <- function(fileName){
+    if(grepl("http",fileName)) {        
+        download.file(fileName, destfile = "temp.RData", mode = "wb")
+        fileName <- "temp.RData"
+    }
     load(fileName)
     get(ls()[ls() != "fileName"])
 }

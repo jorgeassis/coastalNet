@@ -22,6 +22,9 @@
 
 getPairwiseConnectivity <- function(connectivityEvents=NULL, hexagonIDFrom=NULL, hexagonIDTo=NULL, connType="Forward", value="Probability", steppingStone=FALSE, nStepStones=NULL, parallelCores=NULL){
 
+    cat("Getting pairwise connectivity estimates","\n")
+    cat("Hexagons:",length(hexagonIDFrom),"\n")
+
     if( is.null(connectivityEvents)) { stop("The connectivityEvents parameter is required.") }
 
     if( class(hexagonIDFrom) == "data.frame" | class(hexagonIDFrom) == "matrix" ) { stop("hexagonIDFrom needs to be a numeric vector\n")  }
@@ -110,8 +113,8 @@ getPairwiseConnectivity <- function(connectivityEvents=NULL, hexagonIDFrom=NULL,
   }
 
   ## ---------------------------------------------------
-  
-  connectivityEventsAggSquare <- dcast(pairwiseConnectivity, hexagonIDFrom ~ hexagonIDTo, mean, value.var = "value") 
+
+  connectivityEventsAggSquare <- dcast(pairwiseConnectivity, hexagonsFrom ~ hexagonsTo, mean, value.var = "value") 
   connectivityEventsAggSquareFromNames <- as.character(connectivityEventsAggSquare[,1])
   connectivityEventsAggSquareToNames <- colnames(connectivityEventsAggSquare)[-1]
   connectivityEventsAggSquare <- connectivityEventsAggSquare[,-1]

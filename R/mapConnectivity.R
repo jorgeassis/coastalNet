@@ -53,7 +53,6 @@ mapConnectivity <- function(connectivityPairs=NULL, obj=NULL, print=FALSE) {
         
         if( i == 1){ lineConnections <- routes_sl }
         if( i != 1){ lineConnections <- rbind(lineConnections,routes_sl) }
-        
     }
     
     if(print) { 
@@ -74,8 +73,11 @@ mapConnectivity <- function(connectivityPairs=NULL, obj=NULL, print=FALSE) {
         
     }
 
+    hexagonCellsID <- getHexagonID(lineConnections, level="site", buffer=1, print=FALSE)
+    hexagonCells <- hexagonCells[hexagonCells$ID %in% hexagonCellsID,1]
+
     options(warn=0)
     
-    return(list(mappingData=connectivityPairs,lineConnections=lineConnections))
+    return(list(mappingData=connectivityPairs,lineConnections=lineConnections, hexagonCells=hexagonCells))
     
 }
