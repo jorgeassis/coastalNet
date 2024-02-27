@@ -1,5 +1,6 @@
 # coastalNet
-# Global estimates of coastal oceanographic connectivity.
+
+## Global estimates of coastal oceanographic connectivity.
 
 The R package coastalNet offers a suite of tools for retrieving, analyzing and visualizing coastal oceanographic connectivity estimated with high-resolution biophysical modelling.
 
@@ -41,16 +42,16 @@ remotes::install_github("jorgeassis/coastalNet")
 
 ## Demonstration cases
 
-### The role of stepping-stone oceanographic connectivity in population differentiation of Laminaria ochroleuca
+### Case 1. The role of soceanographic connectivity in population differentiation
 
 The provided R script is designed to estimate oceanographic connectivity between sampled populations of Laminaria ochroleuca and verify its role on population geentic differentiation.
 
 [Demonstration case 1](vignettes/Example1.md)
 
-![Project Image](vignettes/Example1_img1.jpg)
+![Project Image](vignettes/Example1_img1.png)
 *Stepping-stone oceanographic connectivity between populations*
 
-### Fish larvae connectivity among Mediterranean Marine Protected Areas
+### Case 2. Fish larvae connectivity among Mediterranean Marine Protected Areas
 
 The provided R script is designed to analyze oceanographic connectivity of fish populations among Mediterranean Marine Protected Areas (MPAs). 
 
@@ -59,7 +60,7 @@ The provided R script is designed to analyze oceanographic connectivity of fish 
 ![Project Image](vignettes/Example2_img1.png)
 *Fish connectivity between Mediterranean Marine Protected Areas*
 
-### Impact of oceanographic connectivity on the future distribution of marine species
+### Case 3. Impact of oceanographic connectivity on the future distribution of marine species
 
 This script focuses on evaluating the impact of oceanographic connectivity on the future distribution of the marine species Macrocystis pyrifera under changing environmental conditions. 
 
