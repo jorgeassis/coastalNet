@@ -1,4 +1,5 @@
-# coastalNet \ Global estimates of coastal oceanographic connectivity.
+# coastalNet
+# Global estimates of coastal oceanographic connectivity.
 
 The R package coastalNet offers a suite of tools for retrieving, analyzing and visualizing coastal oceanographic connectivity estimated with high-resolution biophysical modelling.
 
@@ -16,19 +17,19 @@ These applications highlight the importance of coastalNet in enhancing our under
 
 ## Functions and features
 
-- Data Retrieval
+### Data Retrieval
 getDataBase: Downloads and loads the required database for coastal oceanographic connectivity analysis. This comprises 195,121,399 pairwise connectivity events between 26,642 coastal sites for a 180-day period.
 
-- Spatial subsetting
+### Spatial subsetting
 getHexagonID: Identifies hexagon IDs (representing coastal sites) based on spatial objects and detail levels. It supports a variety of spatial inputs like matrices/data.frames of coordinates, numeric vectors defining bounding boxes, polygon (sf), or raster (SpatRaster) layers. It also allows for specifying a buffer distance and has a print option for visualizing hexagon sites.
 
-- Connectivity Events Retrieval
+### Connectivity Events Retrieval
 getConnectivityEvents: Retrieves connectivity events from a database based on specified criteria such as hexagon IDs (from/to), time filters (year, month, day), and a period defining the timeframe of interest for connectivity events.
 
-- Connectivity Analysis
+### Connectivity Analysis
 calculatePairwiseConnectivity: Calculates pairwise connectivity between hexagon sites using the retrieved connectivity events. It allows for specifying the type of connectivity (forward or backward), the value to calculate (probability or time), and options for stepping stone connectivity (including the number of stepping stones and parallel processing capabilities).
 
-- mapConnectivity: Visualizes connectivity between pairs of sites by mapping the estimates of connectivity (probability/time) and overlaying these connections on a map with the coordinates of the sites. This function generates a data frame and a polygon of class sf with line connections between pairs of sites.
+mapConnectivity: Visualizes connectivity between pairs of sites by mapping the estimates of connectivity (probability/time) and overlaying these connections on a map with the coordinates of the sites. This function generates a data frame and a polygon of class sf with line connections between pairs of sites.
 
 ## Installation
 
@@ -46,7 +47,7 @@ The provided R script is designed to estimate oceanographic connectivity between
 
 [Demonstration case 1](vignettes/Example1.md)
 
-![Project Image](Example1_img1.jpg)
+![Project Image](vignettes/Example1_img1.jpg)
 *Stepping-stone oceanographic connectivity between populations*
 
 ### Fish larvae connectivity among Mediterranean Marine Protected Areas
@@ -55,7 +56,7 @@ The provided R script is designed to analyze oceanographic connectivity of fish 
 
 [Demonstration case 2](vignettes/Example2.md)
 
-![Project Image](Example2_img1.png)
+![Project Image](vignettes/Example2_img1.png)
 *Fish connectivity between Mediterranean Marine Protected Areas*
 
 ### Impact of oceanographic connectivity on the future distribution of marine species
@@ -64,7 +65,7 @@ This script focuses on evaluating the impact of oceanographic connectivity on th
 
 [Demonstration case 3](vignettes/Example3.md)
 
-![Project Image](Example3_img1.png)
+![Project Image](vignettes/Example3_img1.png)
 *Future range expansions of a marine species*
 
 
