@@ -4,7 +4,7 @@ Version: 0.9
 Authors@R: 
     person("Jorge", "Assis", , "jorgemfa@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "https://orcid.org/0000-0002-6624-4820"))
-Description: Global estimates of coastal oceanographic connectivity \\ The coastalNet package is designed to facilitate the analysis of coastal oceanographic connectivity. It provides tools for accessing connectivity databases, retrieving connectivity events between pairs of locations, calculating pairwise connectivity, and visualizing these connections. This package is essential for researchers working in marine ecology and evolution, coastal management and conservation.
+Description: Global estimates of coastal oceanographic connectivity.
 License: `use_ccby_license()`
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

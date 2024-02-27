@@ -5,7 +5,7 @@
 #' @param obj a spatial object of class (1) a matrix or data.frame with Longitude and Latitude coordinates (WGS84), (2) a numeric vector with c(minLon,maxLon,minLat,maxLat), (3) a polygon (sf) or (4) raster (SpatRaster) layer.
 #' @param level the level of detail. Can be "extent" or "site". For the "extent" level, the function returns the hexagon IDs that intersect with the extent of the spatial object. For the "site" level, the function returns the hexagon IDs that are closest to the points or polygons of the spatial object. Default is "extent". 
 #' @param buffer a value defining the buffer distance (in decimal degrees) to expand the extent of the spatial object. Default is 0.
-#' @param print a logical value indicating whether to print the hexagon cells. Default is FALSE.
+#' @param print a logical value indicating whether to print the hexagon sites. Default is FALSE.
 #'
 #' @import terra sf FNN ggplot2 raster
 #' @export

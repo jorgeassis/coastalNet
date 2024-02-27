@@ -1,6 +1,6 @@
 #' Calculate pairwise connectivity
 #'
-#' This function calculates pairwise connectivity between hexagon cells based on connectivity events.
+#' This function calculates pairwise connectivity between hexagon sites based on connectivity events.
 #'
 #' @param connectivityEvents A data frame containing all connectivity events.
 #' @param hexagonIDFrom A numeric vector specifying the hexagon IDs from which connectivity is calculated.

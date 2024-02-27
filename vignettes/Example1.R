@@ -80,7 +80,6 @@ mappedConnectivity <- mapConnectivity(connectivityPairs=pairwiseConnectivity$con
 worldMap <- ne_countries(scale = "medium", returnclass = "sf")[,1]
 worldMap <- st_crop(worldMap,c(xmin=min(laminariaRecords[,1])-5,xmax=max(laminariaRecords[,1])+7.5,ymin=min(laminariaRecords[,2])-5,ymax=max(laminariaRecords[,2])+5))
 
-
 # Get hexagon IDs that retrieved oceanographic connectivity estimates
 hexagonIDConnected <- pairwiseConnectivity$sitesConnected
 
