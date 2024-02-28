@@ -1,4 +1,4 @@
-![Header](github-header-image hr.png)
+<img src="vignettes/github-header-image hr.png" alt="image" width="100%" height="auto">
 
 # coastalNet
 
