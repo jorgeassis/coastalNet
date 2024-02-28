@@ -4,6 +4,7 @@
 
 The R package coastalNet offers a suite of tools for retrieving, analyzing and visualizing coastal oceanographic connectivity estimated with high-resolution biophysical modelling.
 
+<br>
 
 ## Introduction
 
@@ -16,6 +17,8 @@ Biophysical modeling and Lagrangian simulations have significantly advanced our 
 The coastalNet R package emerges as a pivotal tool in marine research and conservation by resolving coastal oceanographic connectivity inferred from a biophysical model that run globally for a two-decade period. Its applications are diverse, including (1) testing the role of oceanographic connectivity in the extant levels of population genetic differentiation, (2) the identification key areas for the conservation of endangered and isolated populations and (3) the strategic designation of coherent networks of marine protected areas. For fisheries, it can (4) provide ways to develop sustainable practices by analyzing the connectivity of important fish populations. The tool is equally crucial for evaluating the effect of climate change on marine connectivity, as it can (5) estimate the direction and intensity of future range expansions while populations track habitat suitability. 
 
 These applications highlight the importance of coastalNet in enhancing our understanding and management of marine environments, establishing it as a vital tool for both researchers and conservation practitioners.
+
+<br>
 
 ## Functions and features
 
@@ -33,6 +36,8 @@ calculatePairwiseConnectivity: Calculates pairwise connectivity between hexagon 
 
 mapConnectivity: Visualizes connectivity between pairs of sites by mapping the estimates of connectivity (probability/time) and overlaying these connections on a map with the coordinates of the sites. This function generates a data frame and a polygon of class sf with line connections between pairs of sites.
 
+<br>
+
 ## Installation
 
 To install the coastalNet package users should utilize the remotes package in R. The remotes package provides a straightforward mechanism for installing R packages directly from GitHub repositories, which is particularly useful for accessing the latest versions of packages that may not yet be available on CRAN. To install coastalNet, you can run the following command in your R console: 
@@ -41,15 +46,21 @@ To install the coastalNet package users should utilize the remotes package in R.
 remotes::install_github("jorgeassis/coastalNet")
 ```
 
+<br>
+
 ## Demonstration cases
 
-### Case 1. The role of soceanographic connectivity in population differentiation
+### Case 1. The role of oceanographic connectivity in population differentiation
 
 The provided R script is designed to estimate oceanographic connectivity between sampled populations of Laminaria ochroleuca and verify its role on population geentic differentiation.
 
-<img src="vignettes/Example1_img1.png" alt="image" width="75%" height="auto">
+[Demonstration case 1](vignettes/Example1.md)
+
+<img src="vignettes/Example1_img1.png" alt="image" width="65%" height="auto">
 
 *Stepping-stone oceanographic connectivity between populations*
+
+<br>
 
 ### Case 2. Fish larvae connectivity among Mediterranean Marine Protected Areas
 
@@ -57,8 +68,11 @@ The provided R script is designed to analyze oceanographic connectivity of fish 
 
 [Demonstration case 2](vignettes/Example2.md)
 
-![Project Image](vignettes/Example2_img1.png)
+<img src="vignettes/Example2_img1.png" alt="image" width="65%" height="auto">
+
 *Fish connectivity between Mediterranean Marine Protected Areas*
+
+<br>
 
 ### Case 3. Impact of oceanographic connectivity on the future distribution of marine species
 
@@ -66,9 +80,11 @@ This script focuses on evaluating the impact of oceanographic connectivity on th
 
 [Demonstration case 3](vignettes/Example3.md)
 
-![Project Image](vignettes/Example3_img1.png)
+<img src="vignettes/Example3_img1.png" alt="image" width="65%" height="auto">
+
 *Future range expansions of a marine species*
 
+<br>
 
 ## Dependencies and Integration
 
