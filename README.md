@@ -1,4 +1,4 @@
-<img src="vignettes/github-header-image hr.png" alt="image" width="100%" height="auto">
+<img src="./github-header-image hr.png" alt="image" width="100%" height="auto">
 
 # coastalNet
 
