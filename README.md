@@ -1,8 +1,9 @@
 # coastalNet
 
-## Global estimates of coastal oceanographic connectivity.
+### Global estimates of coastal oceanographic connectivity.
 
 The R package coastalNet offers a suite of tools for retrieving, analyzing and visualizing coastal oceanographic connectivity estimated with high-resolution biophysical modelling.
+
 
 ## Introduction
 
@@ -46,9 +47,8 @@ remotes::install_github("jorgeassis/coastalNet")
 
 The provided R script is designed to estimate oceanographic connectivity between sampled populations of Laminaria ochroleuca and verify its role on population geentic differentiation.
 
-[Demonstration case 1](vignettes/Example1.md  width="50%" height="auto")
-
 <img src="vignettes/Example1_img1.png" alt="image" width="75%" height="auto">
+
 *Stepping-stone oceanographic connectivity between populations*
 
 ### Case 2. Fish larvae connectivity among Mediterranean Marine Protected Areas
