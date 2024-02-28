@@ -1,10 +1,10 @@
 Package: coastalNet
-Title: What the Package Does (One Line, Title Case)
-Version: 0.9
+Title: Global estimates of coastal oceanographic connectivity. a
+Version: 1.0
 Authors@R: 
     person("Jorge", "Assis", , "jorgemfa@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "https://orcid.org/0000-0002-6624-4820"))
-Description: Global estimates of coastal oceanographic connectivity.
+Description: A suite of tools for retrieving, analyzing and visualizing coastal oceanographic connectivity estimated with high-resolution biophysical modelling.
 License: `use_ccby_license()`
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

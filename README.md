@@ -62,7 +62,7 @@ The provided R script is designed to estimate oceanographic connectivity between
 
 [Demonstration case 1](vignettes/Example1.md)
 
-<img src="vignettes/Example1_img1.png" alt="image" width="70%" height="auto">
+<img src="img/Example1_img1.png" alt="image" width="70%" height="auto">
 
 *Stepping-stone oceanographic connectivity between populations*
 
@@ -74,7 +74,7 @@ The provided R script is designed to analyze oceanographic connectivity of fish 
 
 [Demonstration case 2](vignettes/Example2.md)
 
-<img src="vignettes/Example2_img1.png" alt="image" width="70%" height="auto">
+<img src="img/Example2_img1.png" alt="image" width="70%" height="auto">
 
 *Fish connectivity between Mediterranean Marine Protected Areas*
 
@@ -86,7 +86,7 @@ This script focuses on evaluating the impact of oceanographic connectivity on th
 
 [Demonstration case 3](vignettes/Example3.md)
 
-<img src="vignettes/Example3_img1.png" alt="image" width="70%" height="auto">
+<img src="img/Example3_img1.png" alt="image" width="70%" height="auto">
 
 *Future range expansions of a marine species*
 

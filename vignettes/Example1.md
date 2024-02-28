@@ -120,7 +120,7 @@ plot1 <- ggplot() + geom_point(data = observedPredictedDF, aes(x=Observed, y=Pre
 
 plot1
 ```
-![Project Image](Example1_img1.png)
+![Project Image](../img/Example1_img1.png)
 *Stepping-stone oceanographic connectivity between populations*
 
 ```r
@@ -155,5 +155,5 @@ plot2 <- ggplot() +
 plot2
 ```
 
-![Project Image](Example1_img2.png)
+![Project Image](../img/Example1_img2.png)
 *Stepping-stone oceanographic connectivity between populations*

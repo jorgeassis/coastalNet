@@ -94,5 +94,5 @@ plot1 <- ggplot() +
 plot1
 ```
 
-![Project Image](Example2_img1.png)
+![Project Image](../img/Example2_img1.png)
 *Fish connectivity between Mediterranean Marine Protected Areas*
