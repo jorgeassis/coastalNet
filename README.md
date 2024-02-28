@@ -46,9 +46,9 @@ remotes::install_github("jorgeassis/coastalNet")
 
 The provided R script is designed to estimate oceanographic connectivity between sampled populations of Laminaria ochroleuca and verify its role on population geentic differentiation.
 
-[Demonstration case 1](vignettes/Example1.md)
+[Demonstration case 1](vignettes/Example1.md  width="50%" height="auto")
 
-![Project Image](vignettes/Example1_img1.png)
+<img src="vignettes/Example1_img1.png" alt="image" width="75%" height="auto">
 *Stepping-stone oceanographic connectivity between populations*
 
 ### Case 2. Fish larvae connectivity among Mediterranean Marine Protected Areas
