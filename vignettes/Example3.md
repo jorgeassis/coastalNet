@@ -21,6 +21,9 @@ library(coastalNet)
 library(rnaturalearth)
 library(viridis)
 library(tidyterra)
+library(ggplot2)
+library(sf)
+sf_use_s2(FALSE)
 ```
 
 ### Data Loading

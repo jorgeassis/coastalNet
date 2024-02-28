@@ -20,6 +20,9 @@ gc(reset=TRUE)
 library(coastalNet)
 library(rnaturalearth)
 library(viridis)
+library(ggplot2)
+library(sf)
+sf_use_s2(FALSE)
 ```
 
 ### Data Loading
@@ -63,9 +66,17 @@ A comprehensive visualization of oceanographic connectivity between MPAs is gene
 # Map oceanographic connectivity
 mappedConnectivity <- mapConnectivity(connectivityPairs=pairwiseConnectivity$connectivityPairs,obj=europeanMPA)
 
+# Get hexagon IDs that retrieved oceanographic connectivity estimates
+hexagonIDConnected <- pairwiseConnectivity$sitesConnected
+
+# Get a data.frame of the location of hexagons that retrieved oceanographic connectivity estimates
+data("hexagonCells")
+hexagonCellsConnected <- hexagonCells[hexagonCells$ID %in% hexagonIDConnected,1]
+hexagonCellsConnected <- st_coordinates(st_centroid(hexagonCellsConnected))
+
 # Load the worldmap and crop to the atudy region
 worldMap <- ne_countries(scale = "medium", returnclass = "sf")[,1]
-worldMap <- st_crop(worldMap,c(xmin=min(europeanMPA[,1])-5,xmax=max(europeanMPA[,1])+7.5,ymin=min(europeanMPA[,2])-5,ymax=max(europeanMPA[,2])+5))
+worldMap <- st_crop(worldMap,c(xmin=min(hexagonCellsConnected[,1])-5,xmax=max(hexagonCellsConnected[,1])+7.5,ymin=min(hexagonCellsConnected[,2])-5,ymax=max(hexagonCellsConnected[,2])+5))
 
 # Make a plot of the oceanographic connectivity between populations
 plot1 <- ggplot() + 

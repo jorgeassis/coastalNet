@@ -6,6 +6,9 @@ gc(reset=TRUE)
 library(coastalNet)
 library(rnaturalearth)
 library(viridis)
+library(ggplot2)
+library(sf)
+sf_use_s2(FALSE)
 
 # ---------------------
 
@@ -37,15 +40,23 @@ pairwiseConnectivity <- getPairwiseConnectivity(connectivityEvents, hexagonIDFro
 # Map oceanographic connectivity
 mappedConnectivity <- mapConnectivity(connectivityPairs=pairwiseConnectivity$connectivityPairs,obj=europeanMPA)
 
+# Get hexagon IDs that retrieved oceanographic connectivity estimates
+hexagonIDConnected <- pairwiseConnectivity$sitesConnected
+
+# Get a data.frame of the location of hexagons that retrieved oceanographic connectivity estimates
+data("hexagonCells")
+hexagonCellsConnected <- hexagonCells[hexagonCells$ID %in% hexagonIDConnected,1]
+hexagonCellsConnected <- st_coordinates(st_centroid(hexagonCellsConnected))
+
 # Load the worldmap and crop to the atudy region
 worldMap <- ne_countries(scale = "medium", returnclass = "sf")[,1]
-worldMap <- st_crop(worldMap,c(xmin=min(europeanMPA[,1])-5,xmax=max(europeanMPA[,1])+7.5,ymin=min(europeanMPA[,2])-5,ymax=max(europeanMPA[,2])+5))
+worldMap <- st_crop(worldMap,c(xmin=min(hexagonCellsConnected[,1])-5,xmax=max(hexagonCellsConnected[,1])+7.5,ymin=min(hexagonCellsConnected[,2])-5,ymax=max(hexagonCellsConnected[,2])+5))
 
 # Make a plot of the oceanographic connectivity between populations
 plot1 <- ggplot() + 
   geom_sf(data = worldMap , fill="#CDCDCD", colour = "#9E9E9E" , size=0.25) +
-  geom_point(data = europeanMPA, aes(x = X, y = Y), colour = "#000000",size=2.5) +
-  geom_point(data = europeanMPA, aes(x = X, y = Y), colour = "#FFFFFF",size=1) +
+  geom_point(data = hexagonCellsConnected, aes(x = X, y = Y), colour = "#000000",size=2.5) +
+  geom_point(data = hexagonCellsConnected, aes(x = X, y = Y), colour = "#FFFFFF",size=1) +
   geom_sf(data = mappedConnectivity$lineConnections , linewidth = 0.75 , aes(colour = value)) +
   scale_color_gradientn(colours=rev(magma(6)),na.value = NA, trans = "log") +
   theme_minimal() + theme(axis.title.x=element_blank(),

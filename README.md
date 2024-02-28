@@ -6,17 +6,23 @@ The R package coastalNet offers a suite of tools for retrieving, analyzing and v
 
 ## Introduction
 
-https://www.pnas.org/doi/full/10.1073/pnas.2209637120
+Oceanographic connectivity driven by ocean currents plays a pivotal role in shaping the distribution of marine biodiversity by either creating barriers that isolate populations, leading to increased differentiation, or by facilitating long-distance dispersal that underpins first settlements and broadscale biogeographical patterns. This dynamic mediates the exchange of genes and individuals between populations, particularly during pelagic dispersal stages, significantly influencing population dynamics, regional genetic diversity and differentiation, and ultimately ensuring population persistence over time.
 
-Oceanographic connectivity driven by ocean currents plays a crucial role in shaping the distribution of marine biodiversity, from genes to ecosystems. It mediated gene and individual exchanges between marine populations, especially during pelagic dispersal stages, significantly influencing population dynamics, regional genetic diversity and differentiation, and ultimately, population persistence over time.
 
-The examination of oceanographic connectivity has been precluded by over simplistic methods, such as isolation by distance models that assume higher population isolation with increasing geographic distances, or illustrative maps from which population connectivity is inferred from the general patterns ocean current. These methods overlook the role of tidal forces, topographic features, and wind on oceanic movements, which result in asymmetric connectivity flows among populations, with significant variations across both space and time. Additionally, the link between ocean currents and population connectivity is not linear but rather skewed, matching the extensive genetic structure observed among marine species' distributions.
+the role of connectivity driven by ocean currents has not been well defined at global scales
 
-Biophysical modeling and Lagrangian simulations have significantly advanced our understanding of oceanographic connectivity, providing more accurate estimates of population connectivity by simulating dispersal patterns of larvae and propagules transported by ocean currents.
+The examination of oceanographic connectivity has been precluded by simplistic methods, such as isolation by distance models that assume higher population isolation with increasing geographic distances, or illustrative maps from which population connectivity is inferred from the general patterns ocean current. These methods overlook the role of tidal forces, topographic features, and wind on oceanic movements, which result in asymmetric connectivity flows among populations, with significant variations across both space and time. Additionally, the link between ocean currents and population connectivity is not linear but rather skewed, matching the extensive genetic structure observed among marine species' distributions.
 
-The coastalNet R package emerges as a pivotal tool in marine research and conservation by resolving coastal oceanographic connectivity inferred from a biophysical model that run globally for a two-decade period. Its applications are diverse, including (1) testing the role of oceanographic connectivity in the extant levels of population genetic differentiation, (2) the identification key areas for the conservation of endangered and isolated populations and (3) the strategic designation of coherent networks of marine protected areas. For fisheries, it can (4) provide ways to develop sustainable practices by analyzing the connectivity of important fish populations. The tool is equally crucial for evaluating the effect of climate change on marine connectivity, as it can (5) estimate the direction and intensity of future range expansions while populations track habitat suitability. 
+Biophysical modeling and Lagrangian simulations ([read detailed methods](vignettes/biophysicalModelling.md)) have significantly advanced our understanding of oceanographic connectivity, providing more accurate estimates of population connectivity by simulating dispersal patterns of larvae and propagules transported by ocean currents. The estimates of connectivity couple network analysis (i.e., graph theory) to consider for multigenerational stepping-stone connectivity. 
+
+The coastalNet R package emerges as a pivotal tool in marine research and conservation by resolving coastal oceanographic connectivity inferred from a biophysical model that run globally for a two-decade period. Its applications are diverse, including (1) testing the role of oceanographic connectivity in the extant levels of population genetic differentiation, (2) the identification key areas for the conservation of endangered and isolated populations and (3) the strategic designation of coherent networks of marine protected areas. For fisheries, it can (4) provide ways to develop sustainable practices by analyzing the connectivity of important fish populations. The tool is equally crucial for evaluating the effect of climate change on marine connectivity, as it can (5) estimate the direction and intensity of future range expansions while populations track habitat suitability.
+
+(invasive species)
 
 These applications highlight the importance of coastalNet in enhancing our understanding and management of marine environments, establishing it as a vital tool for both researchers and conservation practitioners.
+
+>> These findings are relevant for mangroves’ biogeography and evolution, as well as management strategies considering climate change and genetic biodiversity conservation.
+
 
 <br>
 
