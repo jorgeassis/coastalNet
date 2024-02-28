@@ -8,8 +8,11 @@ The R package coastalNet offers a suite of tools for retrieving, analyzing and v
 
 Oceanographic connectivity driven by ocean currents plays a pivotal role in shaping the distribution of marine biodiversity by either creating barriers that isolate populations, leading to increased differentiation, or by facilitating long-distance dispersal that underpins first settlements and broadscale biogeographical patterns. This dynamic mediates the exchange of genes and individuals between populations, particularly during pelagic dispersal stages, significantly influencing population dynamics, regional genetic diversity and differentiation, and ultimately ensuring population persistence over time.
 
+Despite its relevance for ecology and evolution, the role of oceanographic connectivity has not been well defined at global scales
 
-the role of connectivity driven by ocean currents has not been well defined at global scales
+in structuring the distribution of mangrove’s genetic diversity has not been addressed at global scale. 
+
+the role of connectivity driven by ocean currents 
 
 The examination of oceanographic connectivity has been precluded by simplistic methods, such as isolation by distance models that assume higher population isolation with increasing geographic distances, or illustrative maps from which population connectivity is inferred from the general patterns ocean current. These methods overlook the role of tidal forces, topographic features, and wind on oceanic movements, which result in asymmetric connectivity flows among populations, with significant variations across both space and time. Additionally, the link between ocean currents and population connectivity is not linear but rather skewed, matching the extensive genetic structure observed among marine species' distributions.
 
