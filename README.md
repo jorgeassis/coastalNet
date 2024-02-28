@@ -1,3 +1,5 @@
+![Header](your-header-image-name.png)
+
 # coastalNet
 
 ### Global estimates of coastal oceanographic connectivity.
@@ -7,6 +9,8 @@ The R package coastalNet offers a suite of tools for retrieving, analyzing and v
 <br>
 
 ## Introduction
+
+https://www.pnas.org/doi/full/10.1073/pnas.2209637120
 
 Oceanographic connectivity driven by ocean currents plays a crucial role in shaping the distribution of marine biodiversity, from genes to ecosystems. It mediated gene and individual exchanges between marine populations, especially during pelagic dispersal stages, significantly influencing population dynamics, regional genetic diversity and differentiation, and ultimately, population persistence over time.
 
@@ -91,3 +95,7 @@ This script focuses on evaluating the impact of oceanographic connectivity on th
 The package integrates with several external R packages for spatial data manipulation (terra, sf, raster), statistical and graph analysis (FNN, igraph, data.table), parallel processing (parallel, doParallel), and visualization (ggplot2, geosphere).
 
 
+## Credits
+
+Logo: DALL.E
+Github Header: https://leviarista.github.io/github-profile-header-generator/
