@@ -28,8 +28,8 @@ getDataBase <- function(myFolder="./Database", overwrite=FALSE){
 
     cat("# ---------------------------------------------","\n")
     cat("Get connectivity database from on-line repository","\n")
-    cat("Years:",oceanographicConnectivity[1,"connectivityEventStartYear"],"-"oceanographicConnectivity[nrow(oceanographicConnectivity),"connectivityEventStartYear"],"\n")
-    cat("Months:",oceanographicConnectivity[1,"connectivityEventStartMonth"],"-"oceanographicConnectivity[nrow(oceanographicConnectivity),"connectivityEventStartMonth"],"\n")
+    cat("Years:",oceanographicConnectivity[1,"connectivityEventStartYear"],"-",oceanographicConnectivity[nrow(oceanographicConnectivity),"connectivityEventStartYear"],"\n")
+    cat("Months:",oceanographicConnectivity[1,"connectivityEventStartMonth"],"-",oceanographicConnectivity[nrow(oceanographicConnectivity),"connectivityEventStartMonth"],"\n")
     cat("Days:",1,"-",31,"\n")
     cat("Number of hexagon sites:",nrow(referenceTable),"\n")
     cat("Connectivity events:",nrow(oceanographicConnectivity),"\n")

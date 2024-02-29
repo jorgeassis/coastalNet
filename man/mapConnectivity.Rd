@@ -2,7 +2,7 @@
 % Please edit documentation in R/mapConnectivity.R
 \name{mapConnectivity}
 \alias{mapConnectivity}
-\title{Maps connectivity between pairs of sites}
+\title{Map connectivity between pairs of sites}
 \usage{
 mapConnectivity(connectivityPairs = NULL, obj = NULL, print = FALSE)
 }
