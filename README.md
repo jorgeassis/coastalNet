@@ -6,6 +6,12 @@ The R package coastalNet offers a suite of tools for retrieving, analyzing and v
 
 ## Introduction
 
+
+Output :: Count number generations
+
+
+
+
 Oceanographic connectivity driven by ocean currents plays a pivotal role in shaping the distribution of marine biodiversity by either creating barriers that isolate populations, leading to increased differentiation, or by facilitating long-distance dispersal that underpins first settlements and broadscale biogeographical patterns. This dynamic mediates the exchange of genes and individuals between populations, particularly during pelagic dispersal stages, significantly influencing population dynamics, regional genetic diversity and differentiation, and ultimately ensuring population persistence over time.
 
 Despite its relevance for ecology and evolution, the role of oceanographic connectivity has not been well defined at global scales
@@ -26,6 +32,7 @@ These applications highlight the importance of coastalNet in enhancing our under
 
 >> These findings are relevant for mangroves’ biogeography and evolution, as well as management strategies considering climate change and genetic biodiversity conservation.
 
+Allow to generate Kernels of dispersal for marine species
 
 <br>
 

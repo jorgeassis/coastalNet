@@ -4,14 +4,14 @@
 #'
 #' @param connectivityEvents A data frame containing all connectivity events.
 #' @param hexagonIDFrom A numeric vector specifying the hexagon IDs from which connectivity is calculated.
-#' @param hexagonIDTo A numeric vector specifying the hexagon IDs to which connectivity is calculated. Default is NULL.
+#' @param hexagonIDTo A numeric vector specifying the hexagon IDs to which connectivity is calculated. If NULL it will be as hexagonIDFrom.
 #' @param connType A character string specifying the type of connectivity ("Forward" or "Backward"). Default is "Forward".
 #' @param value A character string specifying the value to be calculated ("Probability" or "Time"). Default is "Probability".
 #' @param steppingStone A logical value indicating whether to calculate stepping stone connectivity. Default is FALSE and will calculate direct connectivity.
 #' @param nStepStones An integer specifying the maximum number of stepping stones to consider (if steppingStone is TRUE).
 #' @param parallelCores An integer specifying the number of parallel cores to use in the calculation of stepping stone connectivity (if steppingStone is TRUE). Default is NULL and will use all available cores - 1.
 #'
-#' @return A list containing the pairwise connectivity information, including connectivity pairs, connectivity matrix, connectivity graph, sites connected, and sites not connected.
+#' @return A list containing the pairwise connectivity information, including connectivity pairs, connectivity matrix, connectivity graph, the ID of the hexagons connected and unconnected and also the number of stepping-stone steps per connection.
 #'
 #' @examples
 #' # Example usage of getPairwiseConnectivity function
@@ -160,6 +160,7 @@ getPairwiseConnectivity <- function(connectivityEvents=NULL, hexagonIDFrom=NULL,
     pairwiseConnectivity <- foreach(from=hexagonIDFrom, .combine = rbind, .verbose=FALSE, .packages=c("igraph")) %dopar% { 
       
       res.connectivity.to <- numeric(0)
+      res.connectivity.to.steps <- numeric(0)
       
       for( to in hexagonIDTo ) {
         
@@ -171,6 +172,8 @@ getPairwiseConnectivity <- function(connectivityEvents=NULL, hexagonIDFrom=NULL,
         if( ! is.null(nStepStones)) { if( length(path.values) > nStepStones ) { path.values[] <- 0 }  }
         if( length(path.values) == 0) { path.values <- 0 }
         
+        res.connectivity.to.steps <- c(res.connectivity.to.steps,length(path.values))
+
         path.values <- apply( t(path.values) , 1 , prod ) 
         
         if( from == to ) { path.values <- 1 }
@@ -183,7 +186,8 @@ getPairwiseConnectivity <- function(connectivityEvents=NULL, hexagonIDFrom=NULL,
  
       temp.res <- data.frame( hexagonsFrom = from,
                               hexagonsTo = hexagonIDTo , 
-                              value = res.connectivity.to )
+                              value = res.connectivity.to,
+                              steps = res.connectivity.to.steps )
       
       return(temp.res)
       
@@ -191,7 +195,7 @@ getPairwiseConnectivity <- function(connectivityEvents=NULL, hexagonIDFrom=NULL,
       
     }
     
-    stopCluster(cl) ; rm(cl) ; gc()
+    stopCluster(cl) ; rm(cl)
     
     pairwiseConnectivity$hexagonsFrom <- as.numeric(as.character(pairwiseConnectivity$hexagonsFrom))
     pairwiseConnectivity$hexagonsTo <- as.numeric(as.character(pairwiseConnectivity$hexagonsTo))
@@ -225,6 +229,8 @@ getPairwiseConnectivity <- function(connectivityEvents=NULL, hexagonIDFrom=NULL,
   sitesConnected <- hexagonIDTo[ which(hexagonIDTo %in% sitesConnected) ]
   sitesNotConnected <- hexagonIDTo[ which(! hexagonIDTo %in% sitesConnected) ]
   
+  if( ! "steps" %in% colnames(pairwiseConnectivity) ) { pairwiseConnectivity$steps <- 1 }
+
   return( list(connectivityPairs=pairwiseConnectivity,
                connectivityMatrix=pairwiseConnectivitySquare,
                connectivityGraph=graph.obj,

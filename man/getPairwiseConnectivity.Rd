@@ -20,7 +20,7 @@ getPairwiseConnectivity(
 
 \item{hexagonIDFrom}{A numeric vector specifying the hexagon IDs from which connectivity is calculated.}
 
-\item{hexagonIDTo}{A numeric vector specifying the hexagon IDs to which connectivity is calculated. Default is NULL.}
+\item{hexagonIDTo}{A numeric vector specifying the hexagon IDs to which connectivity is calculated. If NULL it will be as hexagonIDFrom.}
 
 \item{connType}{A character string specifying the type of connectivity ("Forward" or "Backward"). Default is "Forward".}
 
@@ -33,10 +33,10 @@ getPairwiseConnectivity(
 \item{parallelCores}{An integer specifying the number of parallel cores to use in the calculation of stepping stone connectivity (if steppingStone is TRUE). Default is NULL and will use all available cores - 1.}
 }
 \value{
-A list containing the pairwise connectivity information, including connectivity pairs, connectivity matrix, connectivity graph, sites connected, and sites not connected.
+A list containing the pairwise connectivity information, including connectivity pairs, connectivity matrix, connectivity graph, the ID of the hexagons connected and unconnected and also the number of stepping-stone steps per connection.
 }
 \description{
-This function calculates pairwise connectivity between hexagon cells based on connectivity events.
+This function calculates pairwise connectivity between hexagon sites based on connectivity events.
 }
 \examples{
 # Example usage of getPairwiseConnectivity function
