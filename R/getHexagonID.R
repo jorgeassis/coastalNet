@@ -5,7 +5,7 @@
 #' @param obj a spatial object of class (1) a matrix or data.frame with Longitude and Latitude coordinates (WGS84), (2) a numeric vector with c(minLon,maxLon,minLat,maxLat), (3) a polygon (sf) or (4) raster (SpatRaster) layer.
 #' @param level the level of detail. Can be "extent" or "site". For the "extent" level, the function returns the hexagon IDs that intersect with the extent of the spatial object. For the "site" level, the function returns the hexagon IDs that are closest to the points or polygons of the spatial object. Default is "extent". 
 #' @param buffer a value defining the buffer distance (in decimal degrees) to expand the extent of the spatial object. Default is 0.
-#' @param print a logical value indicating whether to print the hexagon sites. Default is FALSE.
+#' @param print a logical value indicating whether to print the identified hexagon sites. Default is FALSE.
 #'
 #' @import terra sf FNN ggplot2 raster
 #' @export
@@ -13,8 +13,6 @@
 getHexagonID <- function(obj, level="extent", buffer=0, print=FALSE){
 
     data("referenceTable")
-
-    if( ! exists("referenceTable")) { stop("The reference table is not available. Please, run the getDataBase function.") }
 
     if( class(obj)[1] == "RasterLayer" ) { obj <- rast(obj) }
 
@@ -62,10 +60,12 @@ getHexagonID <- function(obj, level="extent", buffer=0, print=FALSE){
     if(print) { 
                 
         data("hexagonCells")
-        hexagonCells <- hexagonCells[hexagonCells$ID %in% cellID, 1]
+        hexagonCellsID <- hexagonCells[hexagonCells$ID %in% cellID, 1]
 
         # Plot hexagonCells
-        plot1 <- ggplot() + geom_sf(data = hexagonCells, color="black", fill = "#f3a53e") +
+        plot1 <- ggplot() + 
+                            geom_sf(data = hexagonCells, color="#000000", fill = "#7f7f7f") +
+                            geom_sf(data = hexagonCellsID, color="black", fill = "#f19d2e") +
                             theme_minimal() +   
                             theme(legend.position = "none") +
                             coord_sf()

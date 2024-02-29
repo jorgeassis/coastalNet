@@ -13,7 +13,7 @@ getHexagonID(obj, level = "extent", buffer = 0, print = FALSE)
 
 \item{buffer}{a value defining the buffer distance (in decimal degrees) to expand the extent of the spatial object. Default is 0.}
 
-\item{print}{a logical value indicating whether to print the hexagon sites. Default is FALSE.}
+\item{print}{a logical value indicating whether to print the identified hexagon sites. Default is FALSE.}
 }
 \description{
 \code{getHexagonID} This function retrieves the hexagon IDs (i.e., coastal sites) given spatial object and detail level.
