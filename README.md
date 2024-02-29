@@ -4,7 +4,7 @@ The coastalNet R package offers a suite of tools for the analysis of oceanograph
 
 <br>
 
-## Objective and scope
+## Description
 
 CoastalNet aims to facilitate a deeper understanding of oceanographic connectivity by providing researchers with advanced tools for the analysis and visualization of connectivity estimates along the world's coastal areas. This R package bridges critical gaps in existing methodologies, enabling the examination of marine biodiversity distribution with an unprecedented level of detail.
 
@@ -22,16 +22,16 @@ The coastalNet R package represents a significant leap forward in the study of o
 
 ## Functions and features // REDO AFTER BETTER DETAIL FUNCTIONS
 
-### Data Retrieval
+### Data retrieval
 getDataBase: Downloads and loads the required database for coastal oceanographic connectivity analysis. This comprises 195,121,399 pairwise connectivity events between 26,642 coastal sites for a 180-day period.
 
 ### Spatial subsetting
 getHexagonID: Identifies hexagon IDs (representing coastal sites) based on spatial objects and detail levels. It supports a variety of spatial inputs like matrices/data.frames of coordinates, numeric vectors defining bounding boxes, polygon (sf), or raster (SpatRaster) layers. It also allows for specifying a buffer distance and has a print option for visualizing hexagon sites.
 
-### Connectivity Events Retrieval
+### Connectivity events retrieval
 getConnectivityEvents: Retrieves connectivity events from a database based on specified criteria such as hexagon IDs (from/to), time filters (year, month, day), and a period defining the timeframe of interest for connectivity events.
 
-### Connectivity Analysis
+### Connectivity analysis
 calculatePairwiseConnectivity: Calculates pairwise connectivity between hexagon sites using the retrieved connectivity events. It allows for specifying the type of connectivity (forward or backward), the value to calculate (probability or time), and options for stepping stone connectivity (including the number of stepping stones and parallel processing capabilities).
 
 mapConnectivity: Visualizes connectivity between pairs of sites by mapping the estimates of connectivity (probability/time) and overlaying these connections on a map with the coordinates of the sites. This function generates a data frame and a polygon of class sf with line connections between pairs of sites.
@@ -58,22 +58,22 @@ The package integrates with several external R packages for spatial data manipul
 
 The applications of coastalNet's oceanographic connectivity estimates are wide-ranging and critical for advancing marine science:
 
-### Evolutionary Dynamics
+#### Evolutionary dynamics
 By providing detailed connectivity estimates, coastalNet enables researchers to explore the evolutionary processes shaping marine biodiversity. It offers insights into how oceanographic connectivity influences genetic differentiation across populations, aiding in the understanding of speciation and adaptation in the marine environment.
 
-### Climate Change Research
+### Climate change research
 CoastalNet's estimates are invaluable for projecting species' range expansions in response to changing climate conditions. This aids in anticipating shifts in marine biodiversity distribution and preparing for the ecological impacts of climate change.
 
-### Invasive Species Management
+### Invasive species management
 The tool facilitates the mapping of potential spread routes for non-native species, highlighting areas at risk due to global shipping routes and changing environmental conditions. This is crucial for developing strategies to manage invasive species and protect native marine ecosystems.
 
-### Fisheries Management
+### Fisheries management
 By evaluating the connectivity among fish stocks, coastalNet assists in the development of sustainable fishing practices. It enables the determination of optimal harvesting rates and replenishment strategies, ensuring the long-term viability of economically significant fisheries.
 
-### Conservation Priorities
+### Conservation priorities
 CoastalNet plays a pivotal role in identifying essential habitats and connectivity pathways for the protection of endangered and isolated populations. This capability is essential for setting conservation priorities and targeting efforts where they are most needed.
 
-### Design of Marine Protected Area (MPA) Networks
+### Design of Marine Protected Area networks
 Strategic planning based on connectivity estimates from coastalNet can enhance the effectiveness of MPA networks. By ensuring that protected areas are interconnected, these networks can support marine biodiversity conservation efforts more effectively, promoting the resilience and sustainability of marine ecosystems.
 
 <br>
