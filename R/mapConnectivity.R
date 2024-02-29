@@ -17,6 +17,7 @@ mapConnectivity <- function(connectivityPairs=NULL, obj=NULL, print=FALSE) {
     if( class(obj)[1] != "data.frame" ) { stop("The obj parameter must be of class data.frame.") }
     if( class(connectivityPairs)[1] != "data.frame" ) { stop("The connectivityPairs parameter must be of class data.frame.") }
 
+    cat("\n")
     cat("# ---------------------------------------------","\n")
     cat("Map connectivity between pairs of sites","\n")
     cat("# ---------------------------------------------","\n")

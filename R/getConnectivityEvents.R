@@ -27,6 +27,7 @@ getConnectivityEvents <- function(hexagonID, year=NULL, month=NULL, day=NULL, pe
     if( ! is.null(month) ) { if( ! all(month %in% unique(oceanographicConnectivity$connectivityEventStartMonth)) ) { stop("The month(s) provided are not available in the database.") } }
     if( ! is.null(day) ) { if( ! all(day %in% unique(oceanographicConnectivity$connectivityEventStartDay)) ) { stop("The day(s) provided are not available in the database.") } }
 
+    cat("\n")
     cat("# ---------------------------------------------","\n")
     cat("Get connectivity events based on specified criteria","\n")
     cat("Years:",ifelse(!is.null(year),year,"All"),"\n")

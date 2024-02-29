@@ -13,15 +13,12 @@
 #'
 #' @return A list containing the pairwise connectivity information, including connectivity pairs, connectivity matrix, connectivity graph, the ID of the hexagons connected and unconnected and also the number of stepping-stone steps per connection.
 #'
-#' @examples
-#' # Example usage of getPairwiseConnectivity function
-#' connectivity <- getPairwiseConnectivity(connectivityEvents, hexagonIDFrom, hexagonIDTo, connType = "Forward", value = "Probability", steppingStone = FALSE)
-#'
 #' @import igraph data.table parallel doParallel
 #' @export
 
-getPairwiseConnectivity <- function(connectivityEvents=NULL, hexagonIDFrom=NULL, hexagonIDTo=NULL, connType="Forward", value="Probability", steppingStone=FALSE, nStepStones=NULL, parallelCores=NULL){
+getPairwiseConnectivity <- function(connectivityEvents, hexagonIDFrom, hexagonIDTo=NULL, connType="Forward", value="Probability", steppingStone=FALSE, nStepStones=NULL, parallelCores=NULL){
 
+    cat("\n")
     cat("# ---------------------------------------------","\n")
     cat("Get pairwise connectivity estimates","\n")
     cat("Connectivity type:",connType,"\n")
@@ -30,7 +27,8 @@ getPairwiseConnectivity <- function(connectivityEvents=NULL, hexagonIDFrom=NULL,
     cat("Number of maximum stepping stone events:",ifelse(!is.null(nStepStones),nStepStones,"Unlimited"),"\n")
     cat("Number of parallel cores:",ifelse(!is.null(parallelCores),parallelCores,detectCores() - 1),"\n")
 
-    if( is.null(connectivityEvents)) { stop("The connectivityEvents parameter is required.") }
+    if( missing(connectivityEvents)) { stop("The connectivityEvents parameter is required.") }
+    if( missing(hexagonIDFrom)) { stop("Missing hexagonIDFrom parameter.") }
 
     if( class(hexagonIDFrom) == "data.frame" | class(hexagonIDFrom) == "matrix" ) { stop("hexagonIDFrom needs to be a numeric vector\n")  }
     if( class(hexagonIDTo) == "data.frame" | class(hexagonIDTo) == "matrix" ) { stop("hexagonIDTo needs to be a numeric vector\n")  }

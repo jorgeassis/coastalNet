@@ -1,4 +1,4 @@
-<img src="img/github-header-image hr.png" alt="image" width="100%" height="auto">
+<img src="img/github-header-image-hr.png" alt="image" width="100%" height="auto">
 
 The R package coastalNet offers a suite of tools for retrieving, analyzing and visualizing coastal oceanographic connectivity estimated with high-resolution biophysical modelling.
 

@@ -9,6 +9,10 @@
 
 getDataBase <- function(myFolder="./Database", overwrite=FALSE){
 
+    cat("\n")
+    cat("# ---------------------------------------------","\n")
+    cat("Get connectivity database from on-line repository","\n")
+
         options(timeout=10000)
         gc(reset=TRUE, full = TRUE)
 
@@ -26,13 +30,11 @@ getDataBase <- function(myFolder="./Database", overwrite=FALSE){
 
     data("referenceTable")
 
-    cat("# ---------------------------------------------","\n")
-    cat("Get connectivity database from on-line repository","\n")
     cat("Years:",oceanographicConnectivity[1,"connectivityEventStartYear"],"-",oceanographicConnectivity[nrow(oceanographicConnectivity),"connectivityEventStartYear"],"\n")
     cat("Months:",oceanographicConnectivity[1,"connectivityEventStartMonth"],"-",oceanographicConnectivity[nrow(oceanographicConnectivity),"connectivityEventStartMonth"],"\n")
     cat("Days:",1,"-",31,"\n")
     cat("Number of hexagon sites:",nrow(referenceTable),"\n")
-    cat("Connectivity events:",nrow(oceanographicConnectivity),"\n")
+    cat("Number of connectivity events:",nrow(oceanographicConnectivity),"\n")
     cat("# ---------------------------------------------","\n")
 
 

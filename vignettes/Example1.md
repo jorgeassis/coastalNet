@@ -33,10 +33,10 @@ laminariaPopDifferentiation: Contains pairwise genetic differentiation estimates
 
 ```r 
 # Load data.frame containing coordinates (as longitude and longitude, WGS84) of sites sampled for the marine species Laminaria ochroleuca.
-laminariaRecords <- read.csv("https://raw.githubusercontent.com/jorgeassis/coastalNet/main/vignettes/data/Laminaria%20ochroleuca%20Coords.csv", sep=";", header = TRUE)
+laminariaRecords <- read.csv("https://raw.githubusercontent.com/jorgeassis/coastalNet/main/vignettes/data/Laminaria-ochroleuca-Coords.csv", sep=";", header = TRUE)
 
 # Load data.frame containing pairwise genetic differentiation estimates between coordinate sites
-laminariaPopDifferentiation <- read.csv("https://raw.githubusercontent.com/jorgeassis/coastalNet/main/vignettes/data/Laminaria%20ochroleuca%20JostD.csv", sep=";", header = FALSE)
+laminariaPopDifferentiation <- read.csv("https://raw.githubusercontent.com/jorgeassis/coastalNet/main/vignettes/data/Laminaria-ochroleuca-JostD.csv", sep=";", header = FALSE)
 ```
 
 ### Connectivity Analysis

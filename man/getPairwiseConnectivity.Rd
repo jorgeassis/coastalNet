@@ -5,8 +5,8 @@
 \title{Calculate pairwise connectivity}
 \usage{
 getPairwiseConnectivity(
-  connectivityEvents = NULL,
-  hexagonIDFrom = NULL,
+  connectivityEvents,
+  hexagonIDFrom,
   hexagonIDTo = NULL,
   connType = "Forward",
   value = "Probability",
@@ -37,9 +37,4 @@ A list containing the pairwise connectivity information, including connectivity 
 }
 \description{
 This function calculates pairwise connectivity between hexagon sites based on connectivity events.
-}
-\examples{
-# Example usage of getPairwiseConnectivity function
-connectivity <- getPairwiseConnectivity(connectivityEvents, hexagonIDFrom, hexagonIDTo, connType = "Forward", value = "Probability", steppingStone = FALSE)
-
 }

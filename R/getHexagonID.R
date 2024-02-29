@@ -14,6 +14,7 @@ getHexagonID <- function(obj, level="extent", buffer=0, print=FALSE){
 
     data("referenceTable")
 
+    cat("\n")
     cat("# ---------------------------------------------","\n")
     cat("Get the hexagon IDs based on spatial object","\n")
 

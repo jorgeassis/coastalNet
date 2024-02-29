@@ -2,7 +2,7 @@
 #'
 #' A data.frame containing coordinates (as longitude and longitude, WGS84) of sites sampled for the marine species Laminaria ochroleuca.
 #'
-#' @name coordinatesDF
+#' @name dataframeData
 #' @docType data
 #' @usage data(dataframeData)
 #' @format An object of class ...
