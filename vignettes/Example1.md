@@ -52,7 +52,13 @@ getDataBase(myFolder="Database", overwrite=FALSE)
 
 # Get hexagon IDs that define the study region
 hexagonIDRegion <- getHexagonID(obj=laminariaRecords, level="extent", buffer=5, print=TRUE)
+```
 
+![Project Image](../img/Example1_img3.png)
+
+*Hexagon IDs (in black) defining the study region*
+
+```r 
 # Get connectivity events for the study region (all years, all months, all days, 120 days period)
 connectivityEvents <- getConnectivityEvents(hexagonID=hexagonIDRegion, period=120 )
 
@@ -82,7 +88,6 @@ modelDataFrame <- modelDataFrame[modelDataFrame$connectivity != 0 ,]
 modelDataFrame <- modelDataFrame[complete.cases(modelDataFrame),]
 modelDataFrame$connectivity <- -log(modelDataFrame$connectivity)
 ```
-
 
 ### Statistical Modeling
 
@@ -121,7 +126,8 @@ plot1 <- ggplot() + geom_point(data = observedPredictedDF, aes(x=Observed, y=Pre
 plot1
 ```
 ![Project Image](../img/Example1_img1.png)
-*Stepping-stone oceanographic connectivity between populations*
+
+*Role of oceanographic connectivity to population differentiation*
 
 ```r
 # Map oceanographic connectivity between populations
@@ -156,4 +162,5 @@ plot2
 ```
 
 ![Project Image](../img/Example1_img2.png)
+
 *Stepping-stone oceanographic connectivity between populations*

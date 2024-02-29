@@ -14,6 +14,9 @@ getHexagonID <- function(obj, level="extent", buffer=0, print=FALSE){
 
     data("referenceTable")
 
+    cat("# ---------------------------------------------","\n")
+    cat("Get the hexagon IDs based on spatial object","\n")
+
     if( class(obj)[1] == "RasterLayer" ) { obj <- rast(obj) }
 
     options(warn=-1)
@@ -64,8 +67,8 @@ getHexagonID <- function(obj, level="extent", buffer=0, print=FALSE){
 
         # Plot hexagonCells
         plot1 <- ggplot() + 
-                            geom_sf(data = hexagonCells, color="#000000", fill = "#7f7f7f") +
-                            geom_sf(data = hexagonCellsID, color="black", fill = "#f19d2e") +
+                            geom_sf(data = hexagonCells, color="#b4b4b4", fill = "#b4b4b4") +
+                            geom_sf(data = hexagonCellsID, color="black", fill = "black") +
                             theme_minimal() +   
                             theme(legend.position = "none") +
                             coord_sf()
@@ -76,6 +79,9 @@ getHexagonID <- function(obj, level="extent", buffer=0, print=FALSE){
         
     options(warn=0)
     
+    cat("Number of hexagon sites:",length(cellID),"\n")
+    cat("# ---------------------------------------------","\n")
+
     return(cellID)
   
 }

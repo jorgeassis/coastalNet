@@ -1,4 +1,4 @@
-#' Maps connectivity between pairs of sites
+#' Map connectivity between pairs of sites
 #'
 #' This function maps the connectivity between pairs of sites based on pairwise connectivity estimates and coordinate sites.
 #'
@@ -16,6 +16,10 @@ mapConnectivity <- function(connectivityPairs=NULL, obj=NULL, print=FALSE) {
 
     if( class(obj)[1] != "data.frame" ) { stop("The obj parameter must be of class data.frame.") }
     if( class(connectivityPairs)[1] != "data.frame" ) { stop("The connectivityPairs parameter must be of class data.frame.") }
+
+    cat("# ---------------------------------------------","\n")
+    cat("Map connectivity between pairs of sites","\n")
+    cat("# ---------------------------------------------","\n")
 
     data("referenceTable")
     data("hexagonCells")

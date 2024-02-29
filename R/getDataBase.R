@@ -24,4 +24,16 @@ getDataBase <- function(myFolder="./Database", overwrite=FALSE){
         names(oceanographicConnectivity) <<- c("connectivityEventID","connectivityEventStartHexagon","connectivityEventStartYear","connectivityEventStartMonth","connectivityEventStartDay","connectivityEventEndHexagon","connectivityEventTravelTime")
         options(timeout=60)
 
+    data("referenceTable")
+
+    cat("# ---------------------------------------------","\n")
+    cat("Get connectivity database from on-line repository","\n")
+    cat("Years:",oceanographicConnectivity[1,"connectivityEventStartYear"],"-"oceanographicConnectivity[nrow(oceanographicConnectivity),"connectivityEventStartYear"],"\n")
+    cat("Months:",oceanographicConnectivity[1,"connectivityEventStartMonth"],"-"oceanographicConnectivity[nrow(oceanographicConnectivity),"connectivityEventStartMonth"],"\n")
+    cat("Days:",1,"-",31,"\n")
+    cat("Number of hexagon sites:",nrow(referenceTable),"\n")
+    cat("Connectivity events:",nrow(oceanographicConnectivity),"\n")
+    cat("# ---------------------------------------------","\n")
+
+
 }

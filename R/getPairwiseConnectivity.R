@@ -22,8 +22,13 @@
 
 getPairwiseConnectivity <- function(connectivityEvents=NULL, hexagonIDFrom=NULL, hexagonIDTo=NULL, connType="Forward", value="Probability", steppingStone=FALSE, nStepStones=NULL, parallelCores=NULL){
 
-    cat("Getting pairwise connectivity estimates","\n")
-    cat("Hexagons:",length(hexagonIDFrom),"\n")
+    cat("# ---------------------------------------------","\n")
+    cat("Get pairwise connectivity estimates","\n")
+    cat("Connectivity type:",connType,"\n")
+    cat("Connectivity estimate:",value,"\n")
+    cat("Stepping stone connectivity:",steppingStone,"\n")
+    cat("Number of maximum stepping stone events:",ifelse(!is.null(nStepStones),nStepStones,"Unlimited"),"\n")
+    cat("Number of parallel cores:",ifelse(!is.null(parallelCores),parallelCores,detectCores() - 1),"\n")
 
     if( is.null(connectivityEvents)) { stop("The connectivityEvents parameter is required.") }
 
@@ -42,6 +47,10 @@ getPairwiseConnectivity <- function(connectivityEvents=NULL, hexagonIDFrom=NULL,
     hexagonIDFrom <- unique(hexagonIDFrom)
     hexagonIDTo <- unique(hexagonIDTo)
   
+    cat("Hexagons from:",length(hexagonIDFrom),"\n")
+    cat("Hexagons to:",length(hexagonIDTo),"\n")
+    cat("# ---------------------------------------------","\n")
+
   ## ---------------------------------------------------
   
   if( value == "Probability" ) {
@@ -172,7 +181,7 @@ getPairwiseConnectivity <- function(connectivityEvents=NULL, hexagonIDFrom=NULL,
         if( ! is.null(nStepStones)) { if( length(path.values) > nStepStones ) { path.values[] <- 0 }  }
         if( length(path.values) == 0) { path.values <- 0 }
         
-        res.connectivity.to.steps <- c(res.connectivity.to.steps,length(path.values))
+        res.connectivity.to.steps <- c(res.connectivity.to.steps, ifelse( sum(path.values) != 0 ,length(path.values) , 0  ) )
 
         path.values <- apply( t(path.values) , 1 , prod ) 
         
