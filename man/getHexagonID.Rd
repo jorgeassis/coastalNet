@@ -2,19 +2,43 @@
 % Please edit documentation in R/getHexagonID.R
 \name{getHexagonID}
 \alias{getHexagonID}
-\title{Get the hexagon IDs based on a given spatial object and detail level}
+\title{Hexagon IDs for Spatial Objects or Coordinates}
 \usage{
 getHexagonID(obj, level = "extent", buffer = 0, print = FALSE)
 }
 \arguments{
-\item{obj}{a spatial object of class (1) a matrix or data.frame with Longitude and Latitude coordinates (WGS84), (2) a numeric vector with c(minLon,maxLon,minLat,maxLat), (3) a polygon (sf) or (4) raster (SpatRaster) layer.}
+\item{obj}{A spatial object of class 'SpatRaster', 'sf', 'data.frame', or 'matrix', or a vector of coordinates.}
 
-\item{level}{the level of detail. Can be "extent" or "site". For the "extent" level, the function returns the hexagon IDs that intersect with the extent of the spatial object. For the "site" level, the function returns the hexagon IDs that are closest to the points or polygons of the spatial object. Default is "extent".}
+\item{level}{The extraction level. Options are:
+\itemize{
+\item 'extent':  Extract hexagon IDs based on the extent of the input object.
+\item 'site':  Derive hexagon IDs from point locations within the object.
+\item 'centroid':  Obtain hexagon IDs based on the spatial object's centroid.
+}}
 
-\item{buffer}{a value defining the buffer distance (in decimal degrees) to expand the extent of the spatial object. Default is 0.}
+\item{buffer}{(Optional) A numeric value to expand the area considered when extracting hexagon IDs at the 'extent' level. Defaults to 0 (no buffer).}
 
-\item{print}{a logical value indicating whether to print the identified hexagon sites. Default is FALSE.}
+\item{print}{(Optional) A logical flag. If TRUE, creates a map visualization highlighting the selected hexagons. Defaults to FALSE.}
+}
+\value{
+A list of hexagon IDs. If 'obj' contains multiple points (e.g., 'sf' object), the list elements correspond to each input point.
 }
 \description{
-\code{getHexagonID} This function retrieves the hexagon IDs (i.e., coastal sites) given spatial object and detail level.
+\code{getHexagonID} This versatile function determines the hexagon IDs from the coastalNet database, based on a provided spatial object or coordinates. It offers three extraction levels: 'extent', 'site', and 'centroid'. The function also provides a visualization option for selected hexagons.
+}
+\examples{
+\dontrun{
+# Example: RasterLayer object (extent-based)
+my_raster <- raster(extent(0, 10, 5, 15)) 
+hex_ids <- getHexagonID(my_raster, level = "extent")
+
+# Example: A data frame of coordinates (site-based)
+sites <- data.frame(longitude = c(-8.5, -9.2), latitude = c(37.1, 38.5))
+hex_ids <- getHexagonID(sites, level = "site")
+
+# Example: 'sf' object (centroid-based with visualization)
+my_polygons <- st_read("path/to/my_polygons.shp") 
+hex_ids <- getHexagonID(my_polygons, level = "centroid", print = TRUE)
+}
+
 }

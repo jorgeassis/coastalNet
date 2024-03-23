@@ -2,11 +2,11 @@
 % Please edit documentation in R/getPairwiseConnectivity.R
 \name{getPairwiseConnectivity}
 \alias{getPairwiseConnectivity}
-\title{Calculate pairwise connectivity}
+\title{Calculate Pairwise Connectivity Estimates}
 \usage{
 getPairwiseConnectivity(
-  connectivityEvents,
-  hexagonIDFrom,
+  connectivityEvents = NULL,
+  hexagonIDFrom = NULL,
   hexagonIDTo = NULL,
   connType = "Forward",
   value = "Probability",
@@ -16,25 +16,48 @@ getPairwiseConnectivity(
 )
 }
 \arguments{
-\item{connectivityEvents}{A data frame containing all connectivity events.}
+\item{connectivityEvents}{A data frame containing connectivity events.}
 
-\item{hexagonIDFrom}{A numeric vector specifying the hexagon IDs from which connectivity is calculated.}
+\item{hexagonIDFrom}{A list where each element is a vector of hexagon IDs representing 'from' regions.}
 
-\item{hexagonIDTo}{A numeric vector specifying the hexagon IDs to which connectivity is calculated. If NULL it will be as hexagonIDFrom.}
+\item{hexagonIDTo}{(Optional) A list mirroring the structure of 'hexagonalIDFrom', specifying 'to' regions. If not provided, pairwise connectivity will be calculated for all pairs within 'hexagonIDFrom'.}
 
-\item{connType}{A character string specifying the type of connectivity ("Forward" or "Backward"). Default is "Forward".}
+\item{connType}{A string specifying the type of connectivity direction. Options are "Forward" or "Backward". Defaults to "Forward".}
 
-\item{value}{A character string specifying the value to be calculated ("Probability" or "Time"). Default is "Probability".}
+\item{value}{A string specifying the connectivity metric. Options are "Probability", "Events", or "Time". Defaults to "Probability".}
 
-\item{steppingStone}{A logical value indicating whether to calculate stepping stone connectivity. Default is FALSE and will calculate direct connectivity.}
+\item{steppingStone}{(Optional) A logical flag indicating whether stepping-stone connectivity should be considered. Defaults to FALSE.}
 
-\item{nStepStones}{An integer specifying the maximum number of stepping stones to consider (if steppingStone is TRUE).}
+\item{nStepStones}{(Optional) If 'steppingStone' is TRUE, an integer specifying the maximum number of steps in a stepping-stone path. Defaults to unlimited.}
 
-\item{parallelCores}{An integer specifying the number of parallel cores to use in the calculation of stepping stone connectivity (if steppingStone is TRUE). Default is NULL and will use all available cores - 1.}
+\item{parallelCores}{(Optional) The number of parallel cores to use for stepping-stone computations. If not provided, it defaults to available cores - 1.}
 }
 \value{
-A list containing the pairwise connectivity information, including connectivity pairs, connectivity matrix, connectivity graph, the ID of the hexagons connected and unconnected and also the number of stepping-stone steps per connection.
+A list containing:
+\itemize{
+\item \strong{connectivityPairs:} A data frame of pairwise connectivity results (from, to, value, steps)
+\item \strong{connectivityMatrix:} A matrix where rows are 'from' regions and columns are 'to' regions, containing connectivity values.
+\item \strong{connectivityGraph:} An 'igraph' object representing the connectivity network
+\item \strong{sitesConnected:} A vector of 'to' hexagon names that have connections
+\item \strong{sitesNotConnected:} A vector of  'to' hexagon names with no connections, or NA if all are connected.
+}
 }
 \description{
-This function calculates pairwise connectivity between hexagon sites based on connectivity events.
+\code{getPairwiseConnectivity} This function calculates pairwise measures of oceanographic connectivity between sets of hexagons, considering various estimation metrics (probability, events, time),  forward or backward connectivity, and optional stepping stone calculations.
+}
+\examples{
+\dontrun{
+# Example: Basic connectivity (from hexagon 1 to 2)
+pw_results <- getPairwiseConnectivity(connectivityEvents = my_events,
+                                      hexagonIDFrom = list(c("1"), c("2")))
+
+# Example: Stepping-stone connectivity, up to 3 steps, with parallel processing
+pw_results <- getPairwiseConnectivity(connectivityEvents = my_events,
+                                     hexagonIDFrom = list(c("1")), 
+                                     hexagonIDTo =  list(c("2")), 
+                                     steppingStone = TRUE, 
+                                     nStepStones = 3,
+                                     parallelCores = 2) 
+}
+
 }

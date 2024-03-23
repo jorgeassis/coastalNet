@@ -2,7 +2,7 @@
 % Please edit documentation in R/getConnectivityEvents.R
 \name{getConnectivityEvents}
 \alias{getConnectivityEvents}
-\title{Get connectivity events based on specified criteria}
+\title{Retrieve Oceanographic Connectivity Events by Criteria}
 \usage{
 getConnectivityEvents(
   hexagonID,
@@ -13,21 +13,31 @@ getConnectivityEvents(
 )
 }
 \arguments{
-\item{hexagonID}{a vector of hexagon IDs.}
+\item{hexagonID}{A vector of hexagon IDs to filter events.}
 
-\item{year}{a vector of years to filter the events by. Default is NULL.}
+\item{year}{(Optional) A numeric vector of years to limit the results.}
 
-\item{month}{a vector of months to filter the events by. Default is NULL.}
+\item{month}{(Optional) A numeric vector of months to limit the results.}
 
-\item{day}{a vector of days to filter the events by. Default is NULL.}
+\item{day}{(Optional) A numeric vector of days to limit the results.}
 
-\item{period}{A numeric vector with one or two elements representing the time period in which the events occurred. Default is 180.
-If a single value is provided, events with travel time less than or equal to the period will be returned.
-If two values are provided, events with travel time between the two values (inclusive) will be returned.}
+\item{period}{A numeric vector specifying the minimum and maximum duration (days) of events to include.  Can be a single value or a vector of length 2 (e.g., period = c(10, 30)). Maximum value is 180 days.}
 }
 \value{
-A subset of the oceanographicConnectivity database containing the selected connectivity events.
+A data frame containing the filtered oceanographic connectivity events.
 }
 \description{
-\code{getConnectivityEvents} This function retrieves connectivity events from the database based on the specified criteria.
+\code{getConnectivityEvents} This function extracts a subset of oceanographic connectivity events from the main database ('oceanographicConnectivity') based on user-specified criteria including hexagon IDs, time periods (year, month, day), and the duration of events.
+}
+\examples{
+\dontrun{
+# Example: Filter by a single hexagon and year range
+my_events <- getConnectivityEvents(hexagonID = "131", year = 2010:2012) 
+
+# Example: Filter by multiple hexagons, month, and duration
+my_events <- getConnectivityEvents(hexagonID = c("131", "132"), 
+                                 month = 6, 
+                                 period = c(15, 45)) 
+}
+
 }

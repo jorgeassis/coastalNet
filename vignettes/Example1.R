@@ -4,9 +4,13 @@
 rm(list = ls())
 gc(reset=TRUE)
 library(coastalNet)
+
+library(ggplot2)
+library(sf)
 library(lme4)
 library(rnaturalearth)
 library(viridis)
+sf_use_s2(FALSE)
 
 # ---------------------
 
@@ -56,9 +60,10 @@ model <- lm(Observed ~ Predicted, data = observedPredictedDF)
 r2 <- summary(model)$adj.r.squared
 Pearson <- cor(observedPredictedDF)[1,2]
 
-plot1 <- ggplot() + geom_point(data = observedPredictedDF, aes(x=Observed, y=Predicted), color="#848484", fill="gray", size=1.25 ) + 
-  geom_smooth(data = observedPredictedDF, method=lm, aes(x=Observed, y=Predicted), linetype = "dashed", fill="#848484", col='black', size=0.5) + 
-  theme(axis.text.x = element_text(angle = 247, hjust = 1, vjust = 0.5)) + 
+plot1 <- ggplot() + 
+  geom_point(data = observedPredictedDF, aes(x=Observed, y=Predicted), color="#000000", fill="#000000", size=2 ) + 
+  geom_point(data = observedPredictedDF, aes(x=Observed, y=Predicted), color="white", fill="white", size=1 ) + 
+  geom_smooth(data = observedPredictedDF, method=lm, aes(x=Observed, y=Predicted), linetype = "dashed", fill="#c5593c", col='black', size=0.5, alpha = 0.5) + 
   xlab(paste0("Observed population differentiation")) + ylab("Predicted population differentiation") +
   theme_minimal() + 
   theme( panel.grid.major = element_blank() ,
@@ -66,22 +71,23 @@ plot1 <- ggplot() + geom_point(data = observedPredictedDF, aes(x=Observed, y=Pre
          axis.title.y = element_text(margin = margin(t = 0, r = 18, b = 0, l = 0)) ,
          axis.title.x = element_text(margin = margin(t = 18, r = 0, b = 0, l = 0)) ,
          legend.title = element_blank()) +
-         annotate("label", alpha = 0.5, label.padding=unit(0.5, "lines"), x = 0, y = 0.735, hjust=0,vjust=1 , label = paste0("Adjusted R2: ", format(round(r2, 3), nsmall = 3),"\nPearson's Corr.: ",format(round(Pearson, 3), nsmall = 3))) +
-         ggtitle("Role of oceanographic connectivity to population differentiation")
+         annotate("label", alpha = 0.5, label.padding=unit(0.5, "lines"), x = 0, y = 0.835, hjust=0,vjust=1 , label = paste0("Adjusted R2: ", format(round(r2, 3), nsmall = 3),"\nPearson's Corr.: ",format(round(Pearson, 3), nsmall = 3)))
 
+pdf(file="../../Example 1 1.pdf", width=8, height=8)
 plot1
+dev.off()
 
 # ---------------------
 
 # Map oceanographic connectivity between populations
-mappedConnectivity <- mapConnectivity(connectivityPairs=pairwiseConnectivity$connectivityPairs,obj=laminariaRecords)
+mappedConnectivity <- mapConnectivity(connectivityPairs=pairwiseConnectivity$connectivityPairs)
 
 # Load the worldmap and crop to the atudy region
-worldMap <- ne_countries(scale = "medium", returnclass = "sf")[,1]
-worldMap <- st_crop(worldMap,c(xmin=min(laminariaRecords[,1])-5,xmax=max(laminariaRecords[,1])+7.5,ymin=min(laminariaRecords[,2])-5,ymax=max(laminariaRecords[,2])+5))
+worldMap <- ne_countries(scale = "medium", returnclass = "sf")
+worldMap <- st_crop(worldMap,c(xmin=min(laminariaRecords[,1])-5,xmax=max(laminariaRecords[,1])+5,ymin=min(laminariaRecords[,2])-2.5,ymax=max(laminariaRecords[,2])+2.5))
 
 # Get hexagon IDs that retrieved oceanographic connectivity estimates
-hexagonIDConnected <- pairwiseConnectivity$sitesConnected
+hexagonIDConnected <- unique(c(mappedConnectivity$mappingData$FromHexagon,mappedConnectivity$mappingData$FromHexagon))
 
 # Get a data.frame of the location of hexagons that retrieved oceanographic connectivity estimates
 data("hexagonCells")
@@ -92,15 +98,15 @@ hexagonCellsConnected <- st_coordinates(st_centroid(hexagonCellsConnected))
 plot2 <- ggplot() + 
   geom_sf(data = worldMap , fill="#CDCDCD", colour = "#9E9E9E" , size=0.25) +
   geom_point(data = hexagonCellsConnected, aes(x = X, y = Y), colour = "#000000",size=2.5) +
-  geom_point(data = hexagonCellsConnected, aes(x = X, y = Y), colour = "#FFFFFF",size=1) +
-  geom_sf(data = mappedConnectivity$lineConnections , linewidth = 0.25 , aes(colour = value)) +
-  scale_color_gradientn(colours=rev(magma(6)),na.value = "#FDD76C", trans = "log") +
+  geom_point(data = hexagonCellsConnected, aes(x = X, y = Y), colour = "#FFFFFF",size=1.25) +
+  geom_sf(data = mappedConnectivity$lineConnections , linewidth = 0.35 , aes(colour = Value), alpha=0.75) +
+  scale_color_gradientn(colours=rev(magma(6)),na.value = NA, trans = "log") +
   theme_minimal() + theme(axis.title.x=element_blank(),
                           axis.ticks.x=element_blank(),
                           axis.title.y=element_blank(),
                           axis.ticks.y=element_blank(), legend.position = "none") +
-  ggtitle("Stepping-stone oceanographic connectivity between populations")
+  coord_sf()
 
+pdf(file="../../Example 1 2.pdf", width=8, height=8)
 plot2
-
-
+dev.off()

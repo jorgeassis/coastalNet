@@ -47,3 +47,13 @@ NULL
 #' @usage data(sfData)
 #' @format An object of class ...
 NULL
+
+#' My Data 6
+#'
+#' A brief description of the first raster data, including its source, spatial resolution, extent, and any other relevant information.
+#'
+#' @name summaryBM
+#' @docType data
+#' @usage data(summaryBM)
+#' @format An object of class ...
+NULL

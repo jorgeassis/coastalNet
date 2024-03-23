@@ -8,6 +8,7 @@ library(rnaturalearth)
 library(viridis)
 library(terra)
 library(tidyterra)
+library(gridExtra)
 
 # ---------------------
 
@@ -29,7 +30,8 @@ futureRange <- crds(futureRangeRaster, na.rm=TRUE, df=TRUE)
 getDataBase(myFolder="Database", overwrite=FALSE)
 
 # Get hexagon IDs that define the study region
-hexagonIDRegion <- getHexagonID(obj=presentDayRange, level="extent", buffer=5, print=TRUE)
+combinedRange <- unique(rbind(presentDayRange,futureRange))
+hexagonIDRegion <- getHexagonID(obj=combinedRange, level="extent", buffer=5, print=TRUE)
 
 # Get connectivity events for the study region (all years, all months, all days, 30 days period)
 connectivityEvents <- getConnectivityEvents(hexagonID=hexagonIDRegion, period=30 )
@@ -44,13 +46,33 @@ pairwiseConnectivity <- getPairwiseConnectivity(connectivityEvents, hexagonIDFro
 # ---------------------
 
 # Find regions of probability zero
-futureRangeConnected <- futureRange[which( hexagonIDSitesTo %in% pairwiseConnectivity$sitesConnected),]
-futureRangeNotConnected <- futureRange[which( hexagonIDSitesTo %in% pairwiseConnectivity$sitesNotConnected),]
+futureRangeConnected <- futureRange[which(apply(pairwiseConnectivity$connectivityMatrix,2,sum) != 0) ,]
+futureRangeNotConnected <- futureRange[which(apply(pairwiseConnectivity$connectivityMatrix,2,sum) == 0),]
 
-worldMap <- ne_countries(scale = "medium", returnclass = "sf")[,1]
+worldMap <- ne_countries(scale = "medium", returnclass = "sf")
 worldMap <- st_crop(worldMap,presentDayRangeRaster)
 
 plot1 <- ggplot() + 
+  geom_sf(data = worldMap , fill="#CDCDCD", colour = "#9E9E9E" , size=0.25) +
+  geom_point(data = presentDayRange, aes(x = x, y = y), colour = "#000000",size=2.5) +
+  geom_point(data = presentDayRange, aes(x = x, y = y), colour = "#FFFFFF",size=1) +
+  theme_minimal() + theme(axis.title.x=element_blank(),
+                          axis.ticks.x=element_blank(),
+                          axis.title.y=element_blank(),
+                          axis.ticks.y=element_blank(), legend.position = "none") +
+  coord_sf()
+
+plot2 <- ggplot() + 
+  geom_sf(data = worldMap , fill="#CDCDCD", colour = "#9E9E9E" , size=0.25) +
+  geom_point(data = futureRange, aes(x = x, y = y), colour = "#000000",size=2.5) +
+  geom_point(data = futureRange, aes(x = x, y = y), colour = "#FFFFFF",size=1) +
+  theme_minimal() + theme(axis.title.x=element_blank(),
+                          axis.ticks.x=element_blank(),
+                          axis.title.y=element_blank(),
+                          axis.ticks.y=element_blank(), legend.position = "none") +
+  coord_sf()
+
+plot3 <- ggplot() + 
   geom_sf(data = worldMap , fill="#CDCDCD", colour = "#9E9E9E" , size=0.25) +
   geom_point(data = futureRangeNotConnected, aes(x = x, y = y), colour = "#000000",size=2.5) +
   geom_point(data = futureRangeNotConnected, aes(x = x, y = y), colour = "red",size=1) +
@@ -62,6 +84,8 @@ plot1 <- ggplot() +
                           axis.ticks.x=element_blank(),
                           axis.title.y=element_blank(),
                           axis.ticks.y=element_blank(), legend.position = "none") +
-  ggtitle("Future range expansions restricted by oceanographic connectivity")
+  coord_sf()
 
-plot1
+pdf(file="../../Example 3 1.pdf", width=15, height=8)
+grid.arrange(plot1, plot2, plot3, ncol = 3)
+dev.off()

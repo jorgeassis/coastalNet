@@ -2,15 +2,26 @@
 % Please edit documentation in R/getDataBase.R
 \name{getDataBase}
 \alias{getDataBase}
-\title{Get connectivity database from on-line repository}
+\title{Retrieve and Summarize the Oceanographic Connectivity Database}
 \usage{
 getDataBase(myFolder = "./Database", overwrite = FALSE)
 }
 \arguments{
-\item{myFolder}{the folder path where the data files will be stored. Default is "./Database".}
+\item{myFolder}{(Optional) The local folder where the database will be stored. Defaults to "./Database".}
 
-\item{overwrite}{a logical value indicating whether to overwrite existing data files. Default is FALSE.}
+\item{overwrite}{(Optional) A logical flag. If TRUE, the existing database will be overwritten with a fresh download. Defaults to FALSE.}
 }
 \description{
-\code{getDataBase} This function downloads and loads the required data for the coastal oceanographic connectivity analysis.
+\code{getDataBase} This function manages the retrieval and loading of the oceanographic connectivity database. It can download the database
+from an online repository if it does not exist locally or if the 'overwrite' flag is set. The function also provides a summary of the database's key characteristics.
+}
+\examples{
+\dontrun{
+# Download and load the database into the default folder
+getDataBase()
+
+# Download the database to a custom folder and force overwrite 
+getDataBase(myFolder = "my_data_folder", overwrite = TRUE)
+}
+
 }

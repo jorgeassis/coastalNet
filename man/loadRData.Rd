@@ -7,8 +7,21 @@
 loadRData(fileName)
 }
 \arguments{
-\item{fileName}{the name of the R data file to be loaded.}
+\item{fileName}{The filepath or URL of the RData file to load.}
+}
+\value{
+The loaded data object from the RData file.'
 }
 \description{
-\code{loadRData} This function loads an R data file and returns the objects stored in it.
+\code{loadRData} A function to load RData files from either a local filepath or a web-accessible URL. The function handles downloading from URLs if necessary.
+}
+\examples{
+\dontrun{
+# Example with a local file
+mydata <- loadRData("data/my_data.RData")
+
+# Example with a URL
+remote_data <- loadRData("https://mywebsite.com/data/ocean_data.RData")
+}
+
 }
