@@ -4,7 +4,6 @@
 rm(list = ls())
 gc(reset=TRUE)
 library(coastalNet)
-
 library(ggplot2)
 library(sf)
 library(lme4)
@@ -51,27 +50,25 @@ for( from in 1:nrow(laminariaRecords)) {
 # Remove zero connectivity values, missing values and Log-transform connectivity
 modelDataFrame <- modelDataFrame[modelDataFrame$connectivity != 0 ,]
 modelDataFrame <- modelDataFrame[complete.cases(modelDataFrame),]
-modelDataFrame$connectivity <- -log(modelDataFrame$connectivity)
+modelDataFrame$connectivity <- log(modelDataFrame$connectivity)
 
 # Model oceanographic connectivity to population differentiation
-model <- lmer(differentiation ~ connectivity + (1|from), modelDataFrame, REML=F)
-observedPredictedDF <- data.frame(Observed=(modelDataFrame$differentiation), Predicted=predict(model))
-model <- lm(Observed ~ Predicted, data = observedPredictedDF)
+model <- lm(connectivity ~ differentiation, data = modelDataFrame)
 r2 <- summary(model)$adj.r.squared
-Pearson <- cor(observedPredictedDF)[1,2]
+Pearson <- cor(modelDataFrame$connectivity, modelDataFrame$differentiation)
 
 plot1 <- ggplot() + 
-  geom_point(data = observedPredictedDF, aes(x=Observed, y=Predicted), color="#000000", fill="#000000", size=2 ) + 
-  geom_point(data = observedPredictedDF, aes(x=Observed, y=Predicted), color="white", fill="white", size=1 ) + 
-  geom_smooth(data = observedPredictedDF, method=lm, aes(x=Observed, y=Predicted), linetype = "dashed", fill="#c5593c", col='black', size=0.5, alpha = 0.5) + 
-  xlab(paste0("Observed population differentiation")) + ylab("Predicted population differentiation") +
+  geom_point(data = modelDataFrame, aes(x=connectivity, y=differentiation), color="#000000", fill="#000000", size=2 ) + 
+  geom_point(data = modelDataFrame, aes(x=connectivity, y=differentiation), color="white", fill="white", size=1 ) + 
+  geom_smooth(data = modelDataFrame, method=lm, aes(x=connectivity, y=differentiation), linetype = "dashed", fill="#c5593c", col='black', size=0.5, alpha = 0.5) + 
+  xlab(paste0("Oceanographic connectivity [ log(probability) ]")) + ylab("Population genetic differentiation (Fst)") +
   theme_minimal() + 
   theme( panel.grid.major = element_blank() ,
          text = element_text(size=12) ,
          axis.title.y = element_text(margin = margin(t = 0, r = 18, b = 0, l = 0)) ,
          axis.title.x = element_text(margin = margin(t = 18, r = 0, b = 0, l = 0)) ,
          legend.title = element_blank()) +
-         annotate("label", alpha = 0.5, label.padding=unit(0.5, "lines"), x = 0, y = 0.835, hjust=0,vjust=1 , label = paste0("Adjusted R2: ", format(round(r2, 3), nsmall = 3),"\nPearson's Corr.: ",format(round(Pearson, 3), nsmall = 3)))
+         annotate("label", alpha = 0.5, label.padding=unit(0.5, "lines"), x = -77, y = 0.2, hjust=0,vjust=1 , label = paste0("Adjusted R2: ", format(round(r2, 3), nsmall = 3),"\nPearson's Corr.: ",format(round(Pearson, 3), nsmall = 3)))
 
 pdf(file="../../Example 1 1.pdf", width=8, height=8)
 plot1

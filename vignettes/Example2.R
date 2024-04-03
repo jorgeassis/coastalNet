@@ -13,7 +13,7 @@ sf_use_s2(FALSE)
 # ---------------------
 
 # Load a polygon of class sf containing locations (WGS84) of Mediterranean Marine Protected Areas.
-europeanMPA <- loadRData("https://raw.githubusercontent.com/jorgeassis/coastalNet/main/vignettes/data/MPAEurope.RData")
+mediterraneanMPA <- loadRData("https://raw.githubusercontent.com/jorgeassis/coastalNet/main/vignettes/data/MPAEurope.RData")
 
 # ---------------------
 
@@ -21,15 +21,15 @@ europeanMPA <- loadRData("https://raw.githubusercontent.com/jorgeassis/coastalNe
 getDataBase(myFolder="Database", overwrite=FALSE)
 
 # Get hexagon IDs that define the study region
-hexagonIDRegion <- getHexagonID(obj=europeanMPA, level="extent", buffer=6, print=TRUE)
+hexagonIDRegion <- getHexagonID(obj=mediterraneanMPA, level="extent", buffer=6, print=TRUE)
 
 # Get connectivity events for the study region (all years, all months, all days, 32 days period)
 connectivityEvents <- getConnectivityEvents(hexagonID=hexagonIDRegion, period=32 )
 
-# Get hexagon IDs of the sampling sites
-hexagonIDSites <- getHexagonID(obj=europeanMPA, level="site", buffer=0, print=FALSE)
+# Get hexagon IDs of the MPA sites
+hexagonIDSites <- getHexagonID(obj=mediterraneanMPA, level="site", buffer=0, print=FALSE)
 
-# Get pairwise connectivity estimates between coordinate sites
+# Get pairwise connectivity estimates between MPA sites
 pairwiseConnectivity <- getPairwiseConnectivity(connectivityEvents, hexagonIDFrom=hexagonIDSites, connType="Forward", value="Probability", steppingStone=FALSE)
 
 # ---------------------
