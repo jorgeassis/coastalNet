@@ -31,8 +31,8 @@ getDataBase <- function(myFolder="./Database", overwrite=FALSE){
     if ( ! dir.exists(myFolder) ) { dir.create(myFolder, recursive = TRUE) }
 
     if( ! file.exists(paste0(myFolder,"/oceanographicConnectivity.RData")) | overwrite ) {
-        cat("# Downloading file database from online repository.","\n")
-        download.file("https://github.com/jorgeassis/coastalNetRepoLFS/raw/main/oceanographicConnectivity.RData", paste0(myFolder,"/oceanographicConnectivity.RData"))
+       cat("# Downloading database from [figshare] online repository.","\n")
+        download.file("https://figshare.com/ndownloader/files/45641262?private_link=d6c9f097f1bc7613029e", paste0(myFolder,"/oceanographicConnectivity.RData"))
     }
 
     cat("# Loading database.","\n")
