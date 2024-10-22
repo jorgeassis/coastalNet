@@ -18,6 +18,7 @@ library(pheatmap)
 
 ### Data Loading
 
+```r 
 # Define regions [lon-lat boxes]
 region1 <- c(xmin = 3.3 , xmax = 4.1, ymin = 51.35, ymax = 51.95)
 region2 <- c(xmin = 4.675, xmax = 8, ymin = 51.95, ymax = 55.5)
@@ -29,6 +30,7 @@ region2 <- st_as_sfc(st_bbox(region2))
 # Explicitly set the CRS
 region1 <- st_set_crs(region1, 4326)
 region2 <- st_set_crs(region2, 4326)
+```
 
 ### Connectivity Analysis
 
