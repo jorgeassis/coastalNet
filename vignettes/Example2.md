@@ -45,7 +45,7 @@ oceanographicConnectivity <- getDataBase(myFolder="Database", overwrite=FALSE)
 hexagonIDRegion <- getHexagonID(obj=mediterraneanMPA, level="extent", buffer=6, print=TRUE)
 ```
 
-![Hexagon IDs (in black) defining the study region](../img/Example2_img_1.png)
+<img src="../img/Example2_img_1.png" alt="Hexagon IDs (in black) defining the study region" style="width:520px;"/>
 
 ```r 
 # Get connectivity events for the study region (all years, all months, all days, 32 days period)
@@ -92,4 +92,4 @@ ggplot() +
   coord_sf()
 ```
 
-![Fish connectivity between Mediterranean Marine Protected Areas](../img/Example2_img_2.png)
+<img src="../img/Example2_img_2.png" alt="Fish connectivity between Mediterranean Marine Protected Areas" style="width:520px;"/>

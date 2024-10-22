@@ -53,7 +53,9 @@ combinedRange <- unique(rbind(presentDayRange,futureRange))
 hexagonIDRegion <- getHexagonID(obj=combinedRange, level="extent", buffer=5, print=TRUE)
 ```
 
-![Hexagon IDs (in black) defining the study region](../img/Example3_img_1.png)
+<img src="../img/Example3_img_1.png" alt="Hexagon IDs (in black) defining the study region" style="width:520px;"/>
+
+*Figure: Hexagon IDs (in black) defining the study region.*
 
 ```r 
 # Get connectivity events for the study region (all years, all months, all days, 30 days period)
@@ -122,4 +124,6 @@ plot3 <- ggplot() +
 grid.arrange(plot1, plot2, plot3, ncol = 3)
 ```
 
-![Future range expansions. While: Present range; Blue future range expansion; Red restricted future range expansion driven by oceanographic connectivity](../img/Example3_img_2.png)
+<img src="../img/Example3_img_2.png" alt="Future range expansions" style="width:520px;"/>
+
+*Figure: Future range expansions. White: Present range; Blue future range expansion; Red restricted future range expansion driven by oceanographic connectivity.*
