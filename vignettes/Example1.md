@@ -1,13 +1,10 @@
----
-title: "The role of oceanographic connectivity in genetic population differentiation"
-subtitle: "coastalNet Package"
-author: "-----"
-date: "2024-10-22"
----
+## The role of oceanographic connectivity in population differentiation
 
-Oceanographic connectivity driven by the direction and intensity of ocean currents can shape the distribution of intraspecific biodiversity (i.e., the genetic differentiation levels). This code explores how oceanographic connectivity influences population genetic differentiation in a kelp species (Laminaria ochroleuca). It starts by loading data on kelp sampling locations and their pairwise genetic differentiation levels. It calculates pairwise connectivity probabilities between sampling sites, considering multigenerational stepping-stone connections. Then, it builds a statistical model to test if higher connectivity is linked to lower genetic differentiation among kelp populations. The code visualizes this relationship with a scatterplot and creates a map to show the connections between sampling sites, with thicker lines indicating stronger connectivity.
+Oceanographic connectivity driven by the direction and intensity of ocean currents can shape the distribution of intraspecific biodiversity (i.e., the genetic differentiation levels). This code explores how oceanographic connectivity influences population genetic differentiation in a kelp species (Laminaria ochroleuca). It starts by loading data on 23 kelp sampling locations and their pairwise genetic differentiation levels inferred using 15 polymorphic microsatellite markers. It calculates pairwise connectivity probabilities between sampling sites, considering multigenerational stepping-stone connections. Then, it builds a statistical model to test if higher connectivity is linked to lower genetic differentiation among kelp populations. The code visualizes this relationship with a scatterplot and creates a map to show the connections between sampling sites, with thicker lines indicating stronger connectivity.
 
 By combining oceanographic connectivity information derived from coastalNet package with empirical genetic data, the code demonstrates that intraspecific biodiversity can be highly structured by connectivity driven by oceanographic transport and barriers.
+
+Reference: Assis, J., Serrão, E. A., C. Coelho, N., Tempera, F., Valero, M., & Alberto, F. (2018). Past climate changes and strong oceanographic barriers structured low ‐ latitude genetic relics for the golden kelp Laminaria ochroleuca. Journal of Biogeography, 45(45), 2326–2336. https://doi.org/10.1111/jbi.13425
 
 ### Environment Preparation and Package Loading
 

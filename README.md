@@ -77,8 +77,6 @@ The first study investigated to what extent oceanographic connectivity explains 
 
 [R code for case 1](vignettes/Example1.md)
 
-Reference: Assis, J., Serrão, E. A., C. Coelho, N., Tempera, F., Valero, M., & Alberto, F. (2018). Past climate changes and strong oceanographic barriers structured low ‐ latitude genetic relics for the golden kelp Laminaria ochroleuca. Journal of Biogeography, 45(45), 2326–2336. https://doi.org/10.1111/jbi.13425
-
 *Stepping-stone oceanographic connectivity between populations*
 
 <br>
