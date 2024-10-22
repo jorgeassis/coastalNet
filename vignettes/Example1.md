@@ -59,7 +59,7 @@ hexagonIDRegion <- getHexagonID(obj=laminariaRecords, level="extent", buffer=5, 
 
 <img src="../img/Example1_img_1.png" alt="Hexagon IDs (in black) defining the study region" style="width:520px;"/>
 
-*Figure: Fish connectivity between Mediterranean Marine Protected Areas.*
+*Figure: Hexagon IDs (in black) defining the study region.*
 <br>
 
 ```r
