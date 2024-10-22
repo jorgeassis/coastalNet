@@ -45,7 +45,7 @@ The package integrates with several external R packages for spatial data manipul
 
 ## Potential applications
 
-The applications of coastalNet's oceanographic connectivity estimates are wide-ranging and critical for advancing marine science:
+The applications of coastalNet's oceanographic connectivity estimates are wide-ranging and advance marine sciences:
 
 ### Evolutionary dynamics
 By providing detailed connectivity estimates, coastalNet enables researchers to explore the evolutionary processes shaping marine biodiversity. It offers insights into how oceanographic connectivity influences genetic differentiation across populations, aiding in the understanding of speciation and adaptation in the marine environment.
@@ -73,35 +73,33 @@ To illustrate the diverse applications of the dataset, we provide three examples
 
 ### The role of oceanographic connectivity in population differentiation
 
-The first study investigated to what extent oceanographic connectivity explains population genetic differentiation of a kelp species (Laminaria ochroleuca). The provided example code builds a statistical regression model between oceanographic connectivity and empirical genetic differentiation data using 15 polymorphic microsatellite markers for 23 populations across the species entire distribution. The regression model explained approximately 65% of the observed genetic variation. The code also allows generating maps of stepping-stone connectivity pathways between kelp populations.
+The first case investigates to what extent oceanographic connectivity explains population genetic differentiation of a kelp species (Laminaria ochroleuca). The provided code builds a statistical regression model between oceanographic connectivity and empirical genetic differentiation data using 15 polymorphic microsatellite markers for 23 populations across the species entire distribution. The regression model explaines approximately 65% of the observed genetic variation. The code also allows generating maps of stepping-stone connectivity pathways between kelp populations.
 
 [R code for case 1](vignettes/Example1.md)
-
-*Stepping-stone oceanographic connectivity between populations*
 
 <br>
 
 ### Case 2. Fish larvae connectivity among Mediterranean Marine Protected Areas
 
-The second study 19 mapped oceanographic connectivity withing a network of Mediterranean MPAs. The provided example code (Supplement 2) estimates connectivity (using a typical larvae duration of 32 days7,15) between spatial polygons representing the shape and distribution of no-take MPAs (Figure 3b). The approach reveals extensive connectivity among MPAs in the western Mediterranean Sea, but a lack of sufficient stepping-stone connectivity between MPAs in the eastern Mediterranean.
+The second case maps oceanographic connectivity withing a network of Mediterranean MPAs. The provided example code estimates connectivity (using a typical larvae duration of 32 days) between spatial polygons representing the shape and distribution of no-take MPAs in the Mediterranean Sea. The approach reveals extensive connectivity among MPAs in the western Mediterranean Sea, but a lack of sufficient stepping-stone connectivity between MPAs in the eastern Mediterranean.
 
-[Demonstration case 2](vignettes/Example2.pdf)
-
-<img src="img/Example2_img_2.png" alt="image" width="70%" height="auto">
-
-*Fish connectivity between Mediterranean Marine Protected Areas*
+[R code for case 2](vignettes/Example2.md)
 
 <br>
 
 ### Case 3. Impact of oceanographic connectivity on the future distribution of marine species
 
-The third study 36 explored how oceanographic connectivity may restrict a kelp species (Macrocystis pyrifera) to track suitable habitats under future climate change. The provided example code (Supplement 3) combines oceanographic connectivity with habitat suitability data for present and future conditions 37. The approach reveals extensive areas projected to become suitable habitats in the future but likely to remain inaccessible to the kelp due to dispersal barriers created by ocean currents (Figure 3c).
+The third case explores how oceanographic connectivity may restrict a kelp species (Macrocystis pyrifera) to track suitable habitats under future climate change. The provided example code combines oceanographic connectivity with habitat suitability data for present and future conditions. The approach reveals extensive areas projected to become suitable habitats in the future but likely to remain inaccessible to the kelp due to dispersal barriers created by ocean currents.
 
-[Demonstration case 3](vignettes/Example3.pdf)
+[R code for case 3](vignettes/Example3.md)
 
-<img src="img/Example3_img_2.png" alt="image" width="70%" height="auto">
+<br>
 
-*Future range expansions of a marine species*
+### Case 4. Oceanographic connectivity between two regions of the Northern Sea
+
+The forth case explores oceanographic connectivity between regions of the Northern Sea. The provided example code extract pairwise oceanographic connectivity estimates between two regions defined by lon-lat bounding boxes. The approach reveals the degree at which ocean currents connect the two regions.
+
+[R code for case 4](vignettes/Example4.md)
 
 <br>
 

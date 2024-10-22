@@ -1,18 +1,10 @@
----
-title: "Fish larvae connectivity among Mediterranean Marine Protected Areas"
-subtitle: "coastalNet Package"
-author: "-----"
-date: "2024-06-23"
-output:
-  pdf_document: 
-    pandoc_args: "--listings"
-    includes:
-      in_header: "/Users/jorgeassis/Dropbox/Manuscripts/_ Under Revision/Coastal oceanographic connectivity at global scale/R Code/Package Build/wrap-code.tex"
----
+## Fish larvae connectivity among Mediterranean Marine Protected Areas
 
 Networks of Marine Protected Areas (MPAs) must ensure sufﬁcient stepping-stone connectivity for proper conservation of regional pools of biodiversity. This code focuses on mapping fish connectivity among a network of Mediterranean Marine Protected Areas (MPAs). It begins by loading a map of MPA locations and retrieving oceanographic connectivity data from the coastalNet database for the associated region. The code then identifies hexagons encompassing the MPAs and calculates pairwise connectivity probabilities between them, focusing on direct connections of fish populations (average propagule duration of 32 days). Finally, it creates a map visualization highlighting the network of connections between MPAs. The connections are represented by lines, with thicker lines signifying stronger oceanographic connectivity.
 
 By combining oceanographic connectivity information derived from coastalNet package with the distribution of MPAs and larvae duration periods, this script provides an overall view of how fish populations are connected across the Mediterranean MPAs.
+
+Reference: Assis, J., Fragkopoulou, E., Serrão, E. A., Horta e Costa, B. arbara, Gandra, M., & Abecasis, D. (2021). Weak biodiversity connectivity in the European network of no-take marine protected areas. Science of the Total Environment, 773, 1–24. https://doi.org/10.1016/j.scitotenv.2021.145664
 
 ### Environment Preparation and Package Loading
 

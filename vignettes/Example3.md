@@ -1,14 +1,4 @@
----
-title: "Impact of oceanographic connectivity on the future distribution of marine species"
-subtitle: "coastalNet Package"
-author: "-----"
-date: "2024-06-23"
-output:
-  pdf_document: 
-    pandoc_args: "--listings"
-    includes:
-      in_header: "/Users/jorgeassis/Dropbox/Manuscripts/_ Under Revision/Coastal oceanographic connectivity at global scale/R Code/Package Build/wrap-code.tex"
----
+## Impact of oceanographic connectivity on the future distribution of marine species
 
 Climate change is set to cause a major reshuffling of marine biodiversity, which can alter the structure of marine ecosystems and affect their performance and the benefits they deliver. Changes in the geographical distribution of marine species due to climate change are intricately linked to how ocean currents align with temperature gradients. This code explores how oceanographic connectivity may restrict a kelp species (Macrocystis pyrifera) to track suitable habitats under future climate change. It starts by loading habitat suitability maps for current and future distributions. The code then accesses the connectivity database to test if the species can disperse from its current range to the future areas. Finally, the code creates maps visualizing the kelp's current and future distributions and highlights the areas that might become disconnected due to dispersal barriers structured by ocean currents.
 
