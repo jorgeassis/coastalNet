@@ -56,6 +56,7 @@ hexagonIDRegion <- getHexagonID(obj=combinedRange, level="extent", buffer=5, pri
 <img src="../img/Example3_img_1.png" alt="Hexagon IDs (in black) defining the study region" style="width:520px;"/>
 
 *Figure: Hexagon IDs (in black) defining the study region.*
+<br>
 
 ```r 
 # Get connectivity events for the study region (all years, all months, all days, 30 days period)

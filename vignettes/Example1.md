@@ -59,6 +59,9 @@ hexagonIDRegion <- getHexagonID(obj=laminariaRecords, level="extent", buffer=5, 
 
 <img src="../img/Example1_img_1.png" alt="Hexagon IDs (in black) defining the study region" style="width:520px;"/>
 
+*Figure: Fish connectivity between Mediterranean Marine Protected Areas.*
+<br>
+
 ```r
 # Get connectivity events for the study region (all years, all months, all days, 120 days period)
 connectivityEvents <- getConnectivityEvents(connectivity=oceanographicConnectivity,hexagonID=hexagonIDRegion, period=120 )
@@ -126,6 +129,9 @@ ggplot() +
 
 <img src="../img/Example1_img_2.png" alt="Role of oceanographic connectivity to population differentiation" style="width:520px;"/>
 
+*Figure: Role of oceanographic connectivity to population differentiation.*
+<br>
+
 ```r
 # Map oceanographic connectivity between populations
 mappedConnectivity <- mapConnectivity(connectivityPairs=pairwiseConnectivity$connectivityPairs)
@@ -157,3 +163,5 @@ ggplot() +
 ```
 
 <img src="../img/Example1_img_3.png" alt="Stepping-stone oceanographic connectivity between populations" style="width:520px;"/>
+
+*Figure: Stepping-stone oceanographic connectivity between populations.*
