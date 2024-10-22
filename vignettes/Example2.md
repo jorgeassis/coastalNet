@@ -35,7 +35,7 @@ mediterraneanMPA <- loadRData("MPAEurope.RData")
 
 ### Connectivity Analysis
 
-Loads the database of connectivity events (downloads also if not already present). Determines hexagon IDs defining the study region based on the extent of the sampled sites, with a specified buffer. Calculates connectivity events within the study region for a specified period (32 days, the mean larvae duration of fish), considering all years, months, and days. Obtains pairwise connectivity estimates between the precise locations of the MPAs.
+Loads the database of connectivity events (downloads also if not already present). Determines hexagon IDs defining the study region based on the extent of the sampled sites, with a user-defined 6-degree buffer. This buffer allows for the inclusion of connectivity events that extend beyond the defined areas, which is particularly useful for identifying stepping-stone connectivity. Calculates connectivity events within the study region for a specified period (32 days, the mean larvae duration of fish), considering all years, months, and days. Obtains pairwise connectivity estimates between the precise locations of the MPAs.
 
 ```r 
 # Load database

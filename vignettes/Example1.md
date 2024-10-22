@@ -44,10 +44,7 @@ laminariaPopDifferentiation <- read.csv("Laminaria-ochroleuca-JostD.csv", sep=";
 
 ### Connectivity Analysis
 
-Loads the database of connectivity events (downloads also if not already present).
-Determines hexagon IDs defining the study region based on the extent of the sampled sites, with a specified buffer.
-Calculates connectivity events within the study region for a specified period, considering all years, months, and days.
-Obtains pairwise connectivity estimates between the sampled sites using a forward connectivity type, considering the probability of connectivity and allowing for stepping-stone connections.
+The connectivity database is loaded (with automatic downloading if not already present). Hexagon IDs defining the study regions are determined based on the geographic extent of the sampled sites, with a user-defined 5-degree buffer. This buffer allows for the inclusion of connectivity events that extend beyond the defined sampling areas, which is particularly useful for identifying stepping-stone connectivity. Connectivity events within the study region are calculated for a specified period, encompassing all years, months, and days. Pairwise connectivity estimates between the sampled sites are then obtained using forward connectivity, focusing on the probability of connection while accounting for potential stepping-stone pathways.
 
 ```r
 # Load database

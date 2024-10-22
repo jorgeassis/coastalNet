@@ -18,6 +18,8 @@ library(pheatmap)
 
 ### Data Loading
 
+Defines two geographic regions (represented as bounding boxes using longitude-latitude coordinates). These regions will later be used to calculate the oceanographic connectivity between them. The st_as_sfc function from the sf package is used to convert the bounding boxes into sf objects.
+
 ```r 
 # Define regions [lon-lat boxes]
 region1 <- c(xmin = 3.3 , xmax = 4.1, ymin = 51.35, ymax = 51.95)
@@ -34,7 +36,7 @@ region2 <- st_set_crs(region2, 4326)
 
 ### Connectivity Analysis
 
-Loads the database of connectivity events (downloads also if not already present). Establish the study's spatial extent based on the range of Macrocystis pyrifera. It then identifies hexagon IDs representing both present-day locations and projected future sites, setting the stage for detailed connectivity analysis. Calculates oceanographic connectivity events within the defined study region, considering both present and future distributions. It assesses how well-connected present-day locations are with future potential habitats, using a 30-day period for event calculation.
+Loads the database of connectivity events (downloads also if not already present). It then identifies hexagon IDs representing both regions. Establish the study's spatial extent based on the two regions, with a user-defined 0.5-degree buffer. This buffer allows for the inclusion of connectivity events that extend beyond the defined areas, which is particularly useful for identifying stepping-stone connectivity. Calculates oceanographic connectivity events, as forward probabilities, within the defined study region, considering a 180-day period for event calculation.
 
 ```r 
 # Load database

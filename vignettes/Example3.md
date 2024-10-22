@@ -42,7 +42,8 @@ futureRange <- crds(futureRangeRaster, na.rm=TRUE, df=TRUE)
 
 ### Connectivity Analysis
 
-Loads the database of connectivity events (downloads also if not already present). Establish the study's spatial extent based on the range of Macrocystis pyrifera. It then identifies hexagon IDs representing both present-day locations and projected future sites, setting the stage for detailed connectivity analysis. Calculates oceanographic connectivity events within the defined study region, considering both present and future distributions. It assesses how well-connected present-day locations are with future potential habitats, using a 30-day period for event calculation.
+Loads the database of connectivity events (downloads also if not already present). Establish the study's spatial extent based on the range of Macrocystis pyrifera, with a user-defined 5-degree buffer. This buffer allows for the inclusion of connectivity events that extend beyond the defined areas, which is particularly useful for identifying stepping-stone connectivity.
+It then identifies hexagon IDs representing both present-day locations and projected future sites, setting the stage for detailed connectivity analysis. Calculates oceanographic connectivity events within the defined study region, considering both present and future distributions. It assesses how well-connected present-day locations are with future potential habitats, using a 30-day period for event calculation.
 
 ```r 
 # Load database
