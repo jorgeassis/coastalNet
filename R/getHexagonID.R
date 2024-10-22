@@ -54,9 +54,16 @@ getHexagonID <- function(obj, level="extent", buffer=0, print=FALSE){
   options(warn=-1)
   
   if( class(obj)[1] == "data.frame" ) { if ( ncol(obj) > 2 ) { siteNames <- obj[,3] } }
-  if( class(obj)[1] == "sf" ) {
+  
+  if( class(obj)[1] == "sf" | class(obj)[1] == "sfc_POLYGON" | class(obj)[1] == "sfc" ) {
     
     siteNames <- as.data.frame(obj)[,1]
+    
+    if( class(siteNames)[1] == "sfc_POLYGON" | class(siteNames)[1] == "sfc" ) { 
+      siteNames <- as.character(1:length(siteNames))
+      
+    }
+    
     if( class(siteNames)[1] == "numeric" ) { 
       siteNames <- as.character(1:length(siteNames))
       
@@ -68,7 +75,7 @@ getHexagonID <- function(obj, level="extent", buffer=0, print=FALSE){
     
     if( class(obj)[1] == "SpatRaster" ) { obj <- as.numeric(as.vector(ext(obj))) }
     
-    if( class(obj)[1] == "sf" ) { obj <- as.numeric(st_bbox(obj) )[c(1,3,2,4)] }
+    if( class(obj)[1] == "sf" | class(obj)[1] == "sfc_POLYGON" | class(obj)[1] == "sfc" ) { obj <- as.numeric(st_bbox(obj) )[c(1,3,2,4)] }
     
     if( class(obj)[1] == "Extent" ) { obj <- c(obj[1],obj[2],obj[3],obj[4]) }
     
