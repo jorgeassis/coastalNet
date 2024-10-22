@@ -1,16 +1,11 @@
 ---
-title: "The role of oceanographic connectivity in population differentiation"
+title: "The role of oceanographic connectivity in genetic population differentiation"
 subtitle: "coastalNet Package"
 author: "-----"
-date: "2024-03-23"
-output:
-  pdf_document: 
-    pandoc_args: "--listings"
-    includes:
-      in_header: "/Users/jorgeassis/Dropbox/Manuscripts/Global estimates of coastal oceanographic connectivity/R Code/Package Build/wrap-code.tex"
+date: "2024-10-22"
 ---
 
-Oceanographic connectivity driven by the direction and intensity of ocean currents can shape the distribution of intraspecific biodiversity (i.e., the genetic differentiation levels). This code explores how oceanographic connectivity influences genetic differentiation in a kelp species (Laminaria ochroleuca). It starts by loading data on kelp sampling locations and their pairwise genetic differentiation levels. It calculates pairwise connectivity probabilities between sampling sites, considering multigenerational stepping-stone connections. Then, it builds a statistical model to test if higher connectivity is linked to lower genetic differentiation among kelp populations. The code visualizes this relationship with a scatterplot and creates a map to show the connections between sampling sites, with thicker lines indicating stronger connectivity.
+Oceanographic connectivity driven by the direction and intensity of ocean currents can shape the distribution of intraspecific biodiversity (i.e., the genetic differentiation levels). This code explores how oceanographic connectivity influences population genetic differentiation in a kelp species (Laminaria ochroleuca). It starts by loading data on kelp sampling locations and their pairwise genetic differentiation levels. It calculates pairwise connectivity probabilities between sampling sites, considering multigenerational stepping-stone connections. Then, it builds a statistical model to test if higher connectivity is linked to lower genetic differentiation among kelp populations. The code visualizes this relationship with a scatterplot and creates a map to show the connections between sampling sites, with thicker lines indicating stronger connectivity.
 
 By combining oceanographic connectivity information derived from coastalNet package with empirical genetic data, the code demonstrates that intraspecific biodiversity can be highly structured by connectivity driven by oceanographic transport and barriers.
 
@@ -29,22 +24,25 @@ library(sf)
 library(lme4)
 library(rnaturalearth)
 library(viridis)
-sf_use_s2(FALSE)
 ```
 
 ### Data Loading
 
-Imports two CSV files from the GitHub repository:
+Imports two CSV files from repository:
 
 laminariaRecords: Contains geographical coordinates (longitude and latitude, WGS84) of sampled sites for Laminaria ochroleuca.
 laminariaPopDifferentiation: Contains pairwise genetic differentiation estimates between the sampled sites.
 
 ```r
+# Download files from repository
+download.file("https://figshare.com/ndownloader/files/47592263", "Laminaria-ochroleuca-Coords.csv", quiet = TRUE, mode = "wb")
+download.file("https://figshare.com/ndownloader/files/47592254", "Laminaria-ochroleuca-JostD.csv", quiet = TRUE, mode = "wb")
+
 # Load data.frame containing coordinates (as longitude and longitude, WGS84) of sites sampled for the marine species Laminaria ochroleuca.
-laminariaRecords <- read.csv("{hidden for blind peer-review}Laminaria-ochroleuca-Coords.csv", sep=";", header = TRUE)
+laminariaRecords <- read.csv("Laminaria-ochroleuca-Coords.csv", sep=";", header = TRUE)
 
 # Load data.frame containing pairwise genetic differentiation estimates between coordinate sites
-laminariaPopDifferentiation <- read.csv("{hidden for blind peer-review}Laminaria-ochroleuca-JostD.csv", sep=";", header = FALSE)
+laminariaPopDifferentiation <- read.csv("Laminaria-ochroleuca-JostD.csv", sep=";", header = FALSE)
 ```
 
 ### Connectivity Analysis
@@ -56,17 +54,17 @@ Obtains pairwise connectivity estimates between the sampled sites using a forwar
 
 ```r
 # Load database
-getDataBase(myFolder="Database", overwrite=FALSE)
+oceanographicConnectivity <- getDataBase(myFolder="Database", overwrite=FALSE)
 
 # Get hexagon IDs that define the study region
 hexagonIDRegion <- getHexagonID(obj=laminariaRecords, level="extent", buffer=5, print=TRUE)
 ```
 
-![Hexagon IDs (in black) defining the study region](../img/Example1_img_1.png)
+<img src="../img/Example1_img_1.png" alt="Hexagon IDs (in black) defining the study region" style="width:520px;"/>
 
 ```r
 # Get connectivity events for the study region (all years, all months, all days, 120 days period)
-connectivityEvents <- getConnectivityEvents(hexagonID=hexagonIDRegion, period=120 )
+connectivityEvents <- getConnectivityEvents(connectivity=oceanographicConnectivity,hexagonID=hexagonIDRegion, period=120 )
 
 # Get hexagon IDs of the sampling sites
 hexagonIDSites <- getHexagonID(obj=laminariaRecords, level="site", buffer=0, print=FALSE)
@@ -85,7 +83,7 @@ modelDataFrame <- data.frame()
 for( from in 1:nrow(laminariaRecords)) {
   for( to in 1:nrow(laminariaRecords)) {
     if( from == to ) { next }
-    modelDataFrame <- rbind(modelDataFrame,data.frame(from = from, to = to, connectivity = mean(pairwiseConnectivity$connectivityMatrix[from,to], pairwiseConnectivity$connectivityMatrix[to,from], na.rm=T), differentiation = laminariaPopDifferentiation[from,to]))
+    modelDataFrame <- rbind(modelDataFrame,data.frame(from = from, to = to, connectivity = mean(pairwiseConnectivity$connectivityMatrix[from,to], pairwiseConnectivity$connectivityMatrix[to,from], na.rm=T), differentiation = as.numeric(laminariaPopDifferentiation[from,to])))
   }
 }
 
@@ -129,7 +127,7 @@ ggplot() +
          annotate("label", alpha = 0.5, label.padding=unit(0.5, "lines"), x = -77, y = 0.2, hjust=0,vjust=1 , label = paste0("Adjusted R2: ", format(round(r2, 3), nsmall = 3),"\nPearson's Corr.: ",format(round(Pearson, 3), nsmall = 3)))
 ```
 
-![Role of oceanographic connectivity to population differentiation](../img/Example1_img_2.png){width=75%}
+<img src="../img/Example1_img_2.png" alt="Role of oceanographic connectivity to population differentiation" style="width:520px;"/>
 
 ```r
 # Map oceanographic connectivity between populations
@@ -137,7 +135,7 @@ mappedConnectivity <- mapConnectivity(connectivityPairs=pairwiseConnectivity$con
 
 # Load the worldmap and crop to the atudy region
 worldMap <- ne_countries(scale = "medium", returnclass = "sf")
-worldMap <- st_crop(worldMap,c(xmin=min(laminariaRecords[,1])-5,xmax=max(laminariaRecords[,1])+5,ymin=min(laminariaRecords[,2])-2.5,ymax=max(laminariaRecords[,2])+2.5))
+worldMap <- st_crop(worldMap,mappedConnectivity$lineConnections)
 
 # Get hexagon IDs that retrieved oceanographic connectivity estimates
 hexagonIDConnected <- unique(c(mappedConnectivity$mappingData$FromHexagon,mappedConnectivity$mappingData$FromHexagon))
@@ -161,5 +159,4 @@ ggplot() +
   coord_sf()
 ```
 
-![Stepping-stone oceanographic connectivity between populations](../img/Example1_img_3.png){width=75%}
-
+<img src="../img/Example1_img_3.png" alt="Stepping-stone oceanographic connectivity between populations" style="width:520px;"/>

@@ -9,26 +9,29 @@ library(sf)
 library(lme4)
 library(rnaturalearth)
 library(viridis)
-sf_use_s2(FALSE)
 
 # ---------------------
 
+# Download files from repository
+download.file("https://figshare.com/ndownloader/files/47592263", "Laminaria-ochroleuca-Coords.csv", quiet = TRUE, mode = "wb")
+download.file("https://figshare.com/ndownloader/files/47592254", "Laminaria-ochroleuca-JostD.csv", quiet = TRUE, mode = "wb")
+
 # Load data.frame containing coordinates (as longitude and longitude, WGS84) of sites sampled for the marine species Laminaria ochroleuca.
-laminariaRecords <- read.csv("https://raw.githubusercontent.com/jorgeassis/coastalNet/main/vignettes/data/Laminaria-ochroleuca-Coords.csv", sep=";", header = TRUE)
+laminariaRecords <- read.csv("Laminaria-ochroleuca-Coords.csv", sep=";", header = TRUE)
 
 # Load data.frame containing pairwise genetic differentiation estimates between coordinate sites
-laminariaPopDifferentiation <- read.csv("https://raw.githubusercontent.com/jorgeassis/coastalNet/main/vignettes/data/Laminaria-ochroleuca-JostD.csv", sep=";", header = FALSE)
+laminariaPopDifferentiation <- read.csv("Laminaria-ochroleuca-JostD.csv", sep=";", header = FALSE)
 
 # ---------------------
 
 # Load database
-getDataBase(myFolder="Database", overwrite=FALSE)
+oceanographicConnectivity <- getDataBase(myFolder="Database", overwrite=FALSE)
 
 # Get hexagon IDs that define the study region
 hexagonIDRegion <- getHexagonID(obj=laminariaRecords, level="extent", buffer=5, print=TRUE)
 
 # Get connectivity events for the study region (all years, all months, all days, 120 days period)
-connectivityEvents <- getConnectivityEvents(hexagonID=hexagonIDRegion, period=120 )
+connectivityEvents <- getConnectivityEvents(connectivity=oceanographicConnectivity,hexagonID=hexagonIDRegion, period=120 )
 
 # Get hexagon IDs of the sampling sites
 hexagonIDSites <- getHexagonID(obj=laminariaRecords, level="site", buffer=0, print=FALSE)
@@ -43,7 +46,7 @@ modelDataFrame <- data.frame()
 for( from in 1:nrow(laminariaRecords)) {
   for( to in 1:nrow(laminariaRecords)) {
     if( from == to ) { next }
-    modelDataFrame <- rbind(modelDataFrame,data.frame(from = from, to = to, connectivity = mean(pairwiseConnectivity$connectivityMatrix[from,to], pairwiseConnectivity$connectivityMatrix[to,from], na.rm=T), differentiation = laminariaPopDifferentiation[from,to]))
+    modelDataFrame <- rbind(modelDataFrame,data.frame(from = from, to = to, connectivity = mean(pairwiseConnectivity$connectivityMatrix[from,to], pairwiseConnectivity$connectivityMatrix[to,from], na.rm=T), differentiation = as.numeric(laminariaPopDifferentiation[from,to])))
   }
 }
 
@@ -61,7 +64,7 @@ plot1 <- ggplot() +
   geom_point(data = modelDataFrame, aes(x=connectivity, y=differentiation), color="#000000", fill="#000000", size=2 ) + 
   geom_point(data = modelDataFrame, aes(x=connectivity, y=differentiation), color="white", fill="white", size=1 ) + 
   geom_smooth(data = modelDataFrame, method=lm, aes(x=connectivity, y=differentiation), linetype = "dashed", fill="#c5593c", col='black', size=0.5, alpha = 0.5) + 
-  xlab(paste0("Oceanographic connectivity [ log(probability) ]")) + ylab("Population genetic differentiation (Fst)") +
+  xlab(paste0("Oceanographic connectivity [ log(probability) ]")) + ylab("Population genetic differentiation (Jost D)") +
   theme_minimal() + 
   theme( panel.grid.major = element_blank() ,
          text = element_text(size=12) ,
@@ -81,13 +84,14 @@ mappedConnectivity <- mapConnectivity(connectivityPairs=pairwiseConnectivity$con
 
 # Load the worldmap and crop to the atudy region
 worldMap <- ne_countries(scale = "medium", returnclass = "sf")
-worldMap <- st_crop(worldMap,c(xmin=min(laminariaRecords[,1])-5,xmax=max(laminariaRecords[,1])+5,ymin=min(laminariaRecords[,2])-2.5,ymax=max(laminariaRecords[,2])+2.5))
+worldMap <- st_crop(worldMap,mappedConnectivity$lineConnections)
 
 # Get hexagon IDs that retrieved oceanographic connectivity estimates
 hexagonIDConnected <- unique(c(mappedConnectivity$mappingData$FromHexagon,mappedConnectivity$mappingData$FromHexagon))
 
 # Get a data.frame of the location of hexagons that retrieved oceanographic connectivity estimates
 data("hexagonCells")
+
 hexagonCellsConnected <- hexagonCells[hexagonCells$ID %in% hexagonIDConnected,1]
 hexagonCellsConnected <- st_coordinates(st_centroid(hexagonCellsConnected))
 

@@ -2,15 +2,15 @@
 title: "Fish larvae connectivity among Mediterranean Marine Protected Areas"
 subtitle: "coastalNet Package"
 author: "-----"
-date: "2024-03-23"
+date: "2024-06-23"
 output:
   pdf_document: 
     pandoc_args: "--listings"
     includes:
-      in_header: "/Users/jorgeassis/Dropbox/Manuscripts/Global estimates of coastal oceanographic connectivity/R Code/Package Build/wrap-code.tex"
+      in_header: "/Users/jorgeassis/Dropbox/Manuscripts/_ Under Revision/Coastal oceanographic connectivity at global scale/R Code/Package Build/wrap-code.tex"
 ---
 
-Networks of Marine Protected Areas (MPAs) must ensure sufﬁcient stepping-stone connectivity for proper conservation of regional pools of biodiversity in the long-term. This code focuses on mapping fish connectivity patterns within a network of Mediterranean Marine Protected Areas (MPAs). It begins by loading a map of MPA locations and retrieving oceanographic connectivity data from the coastalNet database for the associated region. The code then identifies hexagons encompassing the MPAs and calculates pairwise connectivity probabilities between them, focusing on direct connections of fish populations (average propagule duration of 32 days). Finally, it creates a map visualization highlighting the network of connections between MPAs. The connections are represented by lines, with thicker lines signifying stronger oceanographic connectivity.
+Networks of Marine Protected Areas (MPAs) must ensure sufﬁcient stepping-stone connectivity for proper conservation of regional pools of biodiversity. This code focuses on mapping fish connectivity among a network of Mediterranean Marine Protected Areas (MPAs). It begins by loading a map of MPA locations and retrieving oceanographic connectivity data from the coastalNet database for the associated region. The code then identifies hexagons encompassing the MPAs and calculates pairwise connectivity probabilities between them, focusing on direct connections of fish populations (average propagule duration of 32 days). Finally, it creates a map visualization highlighting the network of connections between MPAs. The connections are represented by lines, with thicker lines signifying stronger oceanographic connectivity.
 
 By combining oceanographic connectivity information derived from coastalNet package with the distribution of MPAs and larvae duration periods, this script provides an overall view of how fish populations are connected across the Mediterranean MPAs.
 
@@ -27,7 +27,6 @@ library(ggplot2)
 library(rnaturalearth)
 library(viridis)
 library(sf)
-sf_use_s2(FALSE)
 ```
 
 ### Data Loading
@@ -35,8 +34,11 @@ sf_use_s2(FALSE)
 A polygon of class sf representing locations of Mediterranean MPAs is loaded from an online repository.
 
 ```r 
+# Download files from repository
+download.file("https://figshare.com/ndownloader/files/47592251", "MPAEurope.RData", quiet = TRUE, mode = "wb")
+
 # Load a polygon of class sf containing locations (WGS84) of Mediterranean Marine Protected Areas.
-mediterraneanMPA <- loadRData("{hidden for blind peer-review}MPAEurope.RData")
+mediterraneanMPA <- loadRData("MPAEurope.RData")
 ```
 
 ### Connectivity Analysis
@@ -45,7 +47,7 @@ Loads the database of connectivity events (downloads also if not already present
 
 ```r 
 # Load database
-getDataBase(myFolder="Database", overwrite=FALSE)
+oceanographicConnectivity <- getDataBase(myFolder="Database", overwrite=FALSE)
 
 # Get hexagon IDs that define the study region
 hexagonIDRegion <- getHexagonID(obj=mediterraneanMPA, level="extent", buffer=6, print=TRUE)
@@ -55,7 +57,7 @@ hexagonIDRegion <- getHexagonID(obj=mediterraneanMPA, level="extent", buffer=6, 
 
 ```r 
 # Get connectivity events for the study region (all years, all months, all days, 32 days period)
-connectivityEvents <- getConnectivityEvents(hexagonID=hexagonIDRegion, period=32 )
+connectivityEvents <- getConnectivityEvents(connectivity=oceanographicConnectivity,hexagonID=hexagonIDRegion, period=32 )
 
 # Get hexagon IDs of the MPA sites
 hexagonIDSites <- getHexagonID(obj=mediterraneanMPA, level="site", buffer=0, print=FALSE)
@@ -82,7 +84,7 @@ hexagonCellsConnected <- st_coordinates(st_centroid(hexagonCellsConnected))
 
 # Load the worldmap and crop to the atudy region
 worldMap <- ne_countries(scale = "medium", returnclass = "sf")
-worldMap <- st_crop(worldMap,c(xmin=min(hexagonCellsConnected[,1])-5,xmax=max(hexagonCellsConnected[,1])+5,ymin=min(hexagonCellsConnected[,2])-5,ymax=max(hexagonCellsConnected[,2])+2.5))
+worldMap <- st_crop(worldMap,st_bbox(mappedConnectivity$lineConnections)[c(1,3,2,4)] + c(-5,5,-5,5))
 
 # Make a plot of the oceanographic connectivity between populations
 ggplot() + 

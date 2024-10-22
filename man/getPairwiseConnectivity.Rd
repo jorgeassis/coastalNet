@@ -16,48 +16,64 @@ getPairwiseConnectivity(
 )
 }
 \arguments{
-\item{connectivityEvents}{A data frame containing connectivity events.}
+\item{connectivityEvents}{A data.table object containing connectivity events, as obtained from functions like 'getConnectivityEvents'. It must have columns:
+\itemize{
+\item 'connectivityEventStartHexagon' (character)
+\item 'connectivityEventEndHexagon' (character)
+\item 'connectivityEventTravelTime' (numeric, in days) - required if 'value = "Time"'.
+}}
 
-\item{hexagonIDFrom}{A list where each element is a vector of hexagon IDs representing 'from' regions.}
+\item{hexagonIDFrom}{A list of character vectors. Each element represents a "from" region (a group of hexagon IDs).}
 
-\item{hexagonIDTo}{(Optional) A list mirroring the structure of 'hexagonalIDFrom', specifying 'to' regions. If not provided, pairwise connectivity will be calculated for all pairs within 'hexagonIDFrom'.}
+\item{hexagonIDTo}{(Optional) A list of character vectors mirroring the structure of 'hexagonIDFrom', each element representing a "to" region. If not provided, pairwise connectivity is calculated among all pairs within 'hexagonIDFrom'.}
 
-\item{connType}{A string specifying the type of connectivity direction. Options are "Forward" or "Backward". Defaults to "Forward".}
+\item{connType}{A character string specifying the direction of connectivity: "Forward" (default) or "Backward".}
 
-\item{value}{A string specifying the connectivity metric. Options are "Probability", "Events", or "Time". Defaults to "Probability".}
+\item{value}{A character string specifying the connectivity metric: "Probability" (default), "Events", or "Time".}
 
-\item{steppingStone}{(Optional) A logical flag indicating whether stepping-stone connectivity should be considered. Defaults to FALSE.}
+\item{steppingStone}{(Optional) A logical flag indicating whether to consider stepping-stone connectivity. Defaults to 'FALSE'.}
 
-\item{nStepStones}{(Optional) If 'steppingStone' is TRUE, an integer specifying the maximum number of steps in a stepping-stone path. Defaults to unlimited.}
+\item{nStepStones}{(Optional) If 'steppingStone' is 'TRUE', an integer specifying the maximum number of steps in a stepping-stone path. If not provided, there is no limit.}
 
-\item{parallelCores}{(Optional) The number of parallel cores to use for stepping-stone computations. If not provided, it defaults to available cores - 1.}
+\item{parallelCores}{(Optional) The number of parallel cores to use for stepping-stone computations (if applicable). If not provided, it defaults to the number of available cores minus 1.}
 }
 \value{
-A list containing:
+A list containing the following components:
 \itemize{
-\item \strong{connectivityPairs:} A data frame of pairwise connectivity results (from, to, value, steps)
-\item \strong{connectivityMatrix:} A matrix where rows are 'from' regions and columns are 'to' regions, containing connectivity values.
-\item \strong{connectivityGraph:} An 'igraph' object representing the connectivity network
-\item \strong{sitesConnected:} A vector of 'to' hexagon names that have connections
-\item \strong{sitesNotConnected:} A vector of  'to' hexagon names with no connections, or NA if all are connected.
+\item 'connectivityPairs': A data.table with pairwise connectivity results, including columns:
+\itemize{
+\item 'From' (character): The name of the "from" region.
+\item 'To' (character): The name of the "to" region.
+\item 'FromHexagon' (list of character): The hexagon IDs in the "from" region.
+\item 'ToHexagon' (list of character): The hexagon IDs in the "to" region.
+\item 'Value' (numeric): The calculated connectivity value.
+\item 'Steps' (numeric): If stepping-stone connectivity is used, the number of steps in the path. Otherwise, 1.
+}
+\item 'connectivityMatrix': A matrix where rows represent "from" regions, columns represent "to" regions, and values are the connectivity estimates.
+\item 'connectivityGraph': An 'igraph' object representing the connectivity network.
+\item 'sitesConnected': A character vector of "to" region names that have connections.
+\item 'sitesNotConnected': A character vector (or 'NA') of "to" region names without connections.
 }
 }
 \description{
-\code{getPairwiseConnectivity} This function calculates pairwise measures of oceanographic connectivity between sets of hexagons, considering various estimation metrics (probability, events, time),  forward or backward connectivity, and optional stepping stone calculations.
+\code{getPairwiseConnectivity} This function calculates pairwise measures of oceanographic connectivity between sets of hexagons. It offers flexibility in defining the direction of connectivity (forward or backward), the connectivity metric (probability, events, or time), and the consideration of stepping-stone paths.
 }
 \examples{
 \dontrun{
+# Load your data (replace with your actual data loading code)
+connectivity_events <- getConnectivityEvents(...) # Assuming you have the necessary data
+
 # Example: Basic connectivity (from hexagon 1 to 2)
-pw_results <- getPairwiseConnectivity(connectivityEvents = my_events,
-                                      hexagonIDFrom = list(c("1"), c("2")))
+pw_results <- getPairwiseConnectivity(connectivityEvents = connectivity_events,
+                                     hexagonIDFrom = list(c("1"), c("2")))
 
 # Example: Stepping-stone connectivity, up to 3 steps, with parallel processing
-pw_results <- getPairwiseConnectivity(connectivityEvents = my_events,
-                                     hexagonIDFrom = list(c("1")), 
-                                     hexagonIDTo =  list(c("2")), 
-                                     steppingStone = TRUE, 
+pw_results <- getPairwiseConnectivity(connectivityEvents = connectivity_events,
+                                     hexagonIDFrom = list(c("1")),
+                                     hexagonIDTo = list(c("2")),
+                                     steppingStone = TRUE,
                                      nStepStones = 3,
-                                     parallelCores = 2) 
+                                     parallelCores = 2)
 }
 
 }

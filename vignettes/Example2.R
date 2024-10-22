@@ -8,23 +8,25 @@ library(rnaturalearth)
 library(viridis)
 library(ggplot2)
 library(sf)
-sf_use_s2(FALSE)
 
 # ---------------------
 
+# Download files from repository
+download.file("https://figshare.com/ndownloader/files/47592251", "MPAEurope.RData", quiet = TRUE, mode = "wb")
+
 # Load a polygon of class sf containing locations (WGS84) of Mediterranean Marine Protected Areas.
-mediterraneanMPA <- loadRData("https://raw.githubusercontent.com/jorgeassis/coastalNet/main/vignettes/data/MPAEurope.RData")
+mediterraneanMPA <- loadRData("MPAEurope.RData")
 
 # ---------------------
 
 # Load database
-getDataBase(myFolder="Database", overwrite=FALSE)
+oceanographicConnectivity <- getDataBase(myFolder="Database", overwrite=FALSE)
 
 # Get hexagon IDs that define the study region
 hexagonIDRegion <- getHexagonID(obj=mediterraneanMPA, level="extent", buffer=6, print=TRUE)
 
 # Get connectivity events for the study region (all years, all months, all days, 32 days period)
-connectivityEvents <- getConnectivityEvents(hexagonID=hexagonIDRegion, period=32 )
+connectivityEvents <- getConnectivityEvents(connectivity=oceanographicConnectivity,hexagonID=hexagonIDRegion, period=32 )
 
 # Get hexagon IDs of the MPA sites
 hexagonIDSites <- getHexagonID(obj=mediterraneanMPA, level="site", buffer=0, print=FALSE)
@@ -47,7 +49,7 @@ hexagonCellsConnected <- st_coordinates(st_centroid(hexagonCellsConnected))
 
 # Load the worldmap and crop to the atudy region
 worldMap <- ne_countries(scale = "medium", returnclass = "sf")
-worldMap <- st_crop(worldMap,c(xmin=min(hexagonCellsConnected[,1])-5,xmax=max(hexagonCellsConnected[,1])+5,ymin=min(hexagonCellsConnected[,2])-5,ymax=max(hexagonCellsConnected[,2])+2.5))
+worldMap <- st_crop(worldMap,st_bbox(mappedConnectivity$lineConnections)[c(1,3,2,4)] + c(-5,5,-5,5))
 
 # Make a plot of the oceanographic connectivity between populations
 plot1 <- ggplot() + 
@@ -65,5 +67,4 @@ plot1 <- ggplot() +
 pdf(file="../../Example 2 1.pdf", width=12, height=8)
 plot1
 dev.off()
-
 

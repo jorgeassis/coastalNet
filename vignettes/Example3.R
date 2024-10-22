@@ -12,11 +12,15 @@ library(gridExtra)
 
 # ---------------------
 
-# Load raster layers with the present-day and projected (future, year 2100) distributions of the marine species Macrocystis pyrifera.
-presentDayRangeRaster <- rast("https://raw.githubusercontent.com/jorgeassis/coastalNet/main/vignettes/data/presentDay.tif")
-futureRangeRaster <- rast("https://raw.githubusercontent.com/jorgeassis/coastalNet/main/vignettes/data/Future.tif")
+# Download files from repository
+download.file("https://figshare.com/ndownloader/files/47592260", "presentDay.tif", quiet = TRUE, mode = "wb")
+download.file("https://figshare.com/ndownloader/files/47592257", "Future.tif", quiet = TRUE, mode = "wb")
 
-# Remove cells of no present-day distribution
+# Load raster layers with the present-day and projected (future, year 2100) distributions of the marine species Macrocystis pyrifera.
+presentDayRangeRaster <- rast("presentDay.tif")
+futureRangeRaster <- rast("Future.tif")
+
+# Remove cells of no suitable habitats distribution
 presentDayRangeRaster[presentDayRangeRaster == 0] <- NA
 futureRangeRaster[futureRangeRaster == 0] <- NA
 
@@ -27,16 +31,18 @@ futureRange <- crds(futureRangeRaster, na.rm=TRUE, df=TRUE)
 # ---------------------
 
 # Load database
-getDataBase(myFolder="Database", overwrite=FALSE)
+oceanographicConnectivity <- getDataBase(myFolder="Database", overwrite=FALSE)
+
+# Combine the distribution records of present and future conditions
+combinedRange <- unique(rbind(presentDayRange,futureRange))
 
 # Get hexagon IDs that define the study region
-combinedRange <- unique(rbind(presentDayRange,futureRange))
 hexagonIDRegion <- getHexagonID(obj=combinedRange, level="extent", buffer=5, print=TRUE)
 
 # Get connectivity events for the study region (all years, all months, all days, 30 days period)
-connectivityEvents <- getConnectivityEvents(hexagonID=hexagonIDRegion, period=30 )
+connectivityEvents <- getConnectivityEvents(connectivity=oceanographicConnectivity,hexagonID=hexagonIDRegion, period=30 )
 
-# Get hexagon IDs of the sampling sites
+# Get hexagon IDs of the distribution sites
 hexagonIDSitesFrom <- getHexagonID(obj=presentDayRange, level="site", buffer=0, print=FALSE)
 hexagonIDSitesTo <- getHexagonID(obj=futureRange, level="site", buffer=0, print=FALSE)
 

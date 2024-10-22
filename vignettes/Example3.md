@@ -2,15 +2,15 @@
 title: "Impact of oceanographic connectivity on the future distribution of marine species"
 subtitle: "coastalNet Package"
 author: "-----"
-date: "2024-03-23"
+date: "2024-06-23"
 output:
   pdf_document: 
     pandoc_args: "--listings"
     includes:
-      in_header: "/Users/jorgeassis/Dropbox/Manuscripts/Global estimates of coastal oceanographic connectivity/R Code/Package Build/wrap-code.tex"
+      in_header: "/Users/jorgeassis/Dropbox/Manuscripts/_ Under Revision/Coastal oceanographic connectivity at global scale/R Code/Package Build/wrap-code.tex"
 ---
 
-Climate change is set to cause a major reshuffling of marine biodiversity, which will alter the structure of marine ecosystems and affect their performance and the benefits they deliver. Changes in the geographical distribution of marine species due to climate change are intricately linked to how ocean currents align with temperature gradients, underscoring the intricate nature of these distributional shifts. This code investigates how a kelp species (Macrocystis pyrifera) might respond to climate change in terms of its ability to reach suitable habitats. It starts by loading habitat suitability maps for current and future distributions. The code then accesses the connectivity database to test if the species can disperse from its current range to the future areas. Finally, the code creates maps visualizing the kelp's current and future distributions and highlights the areas that might become disconnected due to dispersal barriers structured by ocean currents.
+Climate change is set to cause a major reshuffling of marine biodiversity, which can alter the structure of marine ecosystems and affect their performance and the benefits they deliver. Changes in the geographical distribution of marine species due to climate change are intricately linked to how ocean currents align with temperature gradients. This code explores how oceanographic connectivity may restrict a kelp species (Macrocystis pyrifera) to track suitable habitats under future climate change. It starts by loading habitat suitability maps for current and future distributions. The code then accesses the connectivity database to test if the species can disperse from its current range to the future areas. Finally, the code creates maps visualizing the kelp's current and future distributions and highlights the areas that might become disconnected due to dispersal barriers structured by ocean currents.
 
 ### Environment Preparation and Package Loading
 
@@ -33,9 +33,13 @@ library(gridExtra)
 Loading raster data representing the current and projected future distributions of Macrocystis pyrifera. This step involves removing non-relevant cells (with a value of 0) to focus on areas of presence.
 
 ```r 
+# Download files from repository
+download.file("https://figshare.com/ndownloader/files/47592260", "presentDay.tif", quiet = TRUE, mode = "wb")
+download.file("https://figshare.com/ndownloader/files/47592257", "Future.tif", quiet = TRUE, mode = "wb")
+
 # Load raster layers with the present-day and projected (future, year 2100) distributions of the marine species Macrocystis pyrifera.
-presentDayRangeRaster <- rast("{hidden for blind peer-review}presentDay.tif")
-futureRangeRaster <- rast("{hidden for blind peer-review}Future.tif")
+presentDayRangeRaster <- rast("presentDay.tif")
+futureRangeRaster <- rast("Future.tif")
 
 # Remove cells of no present-day distribution
 presentDayRangeRaster[presentDayRangeRaster == 0] <- NA
@@ -52,7 +56,7 @@ Loads the database of connectivity events (downloads also if not already present
 
 ```r 
 # Load database
-getDataBase(myFolder="Database", overwrite=FALSE)
+oceanographicConnectivity <- getDataBase(myFolder="Database", overwrite=FALSE)
 
 # Get hexagon IDs that define the study region
 combinedRange <- unique(rbind(presentDayRange,futureRange))
@@ -63,7 +67,7 @@ hexagonIDRegion <- getHexagonID(obj=combinedRange, level="extent", buffer=5, pri
 
 ```r 
 # Get connectivity events for the study region (all years, all months, all days, 30 days period)
-connectivityEvents <- getConnectivityEvents(hexagonID=hexagonIDRegion, period=30 )
+connectivityEvents <- getConnectivityEvents(connectivity=oceanographicConnectivity,hexagonID=hexagonIDRegion, period=30 )
 
 # Get hexagon IDs of the sampling sites
 hexagonIDSitesFrom <- getHexagonID(obj=presentDayRange, level="site", buffer=0, print=FALSE)
