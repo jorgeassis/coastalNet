@@ -75,7 +75,7 @@ To illustrate the diverse applications of the dataset, we provide three examples
 
 The first study investigated to what extent oceanographic connectivity explains population genetic differentiation of a kelp species (Laminaria ochroleuca). The provided example code builds a statistical regression model between oceanographic connectivity and empirical genetic differentiation data using 15 polymorphic microsatellite markers for 23 populations across the species entire distribution. The regression model explained approximately 65% of the observed genetic variation. The code also allows generating maps of stepping-stone connectivity pathways between kelp populations.
 
-[R code for case 1](vignettes/Example1.html)
+[R code for case 1](vignettes/Example1.md)
 
 Reference: Assis, J., Serrão, E. A., C. Coelho, N., Tempera, F., Valero, M., & Alberto, F. (2018). Past climate changes and strong oceanographic barriers structured low ‐ latitude genetic relics for the golden kelp Laminaria ochroleuca. Journal of Biogeography, 45(45), 2326–2336. https://doi.org/10.1111/jbi.13425
 
