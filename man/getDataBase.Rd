@@ -4,10 +4,10 @@
 \alias{getDataBase}
 \title{Retrieve and Summarize the Oceanographic Connectivity Database}
 \usage{
-getDataBase(myFolder = "./Database", overwrite = FALSE)
+getDataBase(fileName = "./Database/connectivity.RData", overwrite = FALSE)
 }
 \arguments{
-\item{myFolder}{(Optional) A character string specifying the local folder where the database will be stored. Defaults to "./Database".}
+\item{fileName}{(Optional) A character string specifying the local .RData file where the database will be stored. Defaults to "./Database/connectivity.RData".}
 
 \item{overwrite}{(Optional) A logical flag. If 'TRUE', the existing database will be overwritten with a fresh download. Defaults to 'FALSE'.}
 }
@@ -24,7 +24,7 @@ from an online repository if it does not exist locally or if the 'overwrite' fla
 connectivity <- getDataBase()
 
 # Download the database to a custom folder and force overwrite 
-connectivity <- getDataBase(myFolder = "my_data_folder", overwrite = TRUE)
+connectivity <- getDataBase(fileName = "Database/connectivity.RData", overwrite = TRUE)
 }
 
 }

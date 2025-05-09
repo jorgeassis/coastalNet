@@ -1,8 +1,11 @@
 # ---------------------------------------------
-# Clean environment and load packages
 
+# Clean environment
+closeAllConnections()
 rm(list = ls())
 gc(reset=TRUE)
+
+# Load necessary libraries:
 library(coastalNet)
 library(rnaturalearth)
 library(sf)
@@ -11,7 +14,16 @@ library(pheatmap)
 # ---------------------
 
 # Load database
-oceanographicConnectivity <- getDataBase(myFolder="Database", overwrite=FALSE)
+oceanographicConnectivity <- getDataBase()
+
+# Load hexagons (i.e., source and sink locations)
+hexagonCells <- loadHexagons()
+
+# Inspect the object hexagonCells
+ggplot() + 
+  geom_sf(data = hexagonCells, color="black") +
+  coord_sf(crs= "+proj=robin") +
+  theme_minimal()
 
 # Define regions [lon-lat boxes]
 region1 <- c(xmin = 3.3 , xmax = 4.1, ymin = 51.35, ymax = 51.95)
@@ -26,22 +38,17 @@ region1 <- st_set_crs(region1, 4326)
 region2 <- st_set_crs(region2, 4326)
 
 # Get hexagon IDs that define the individual study regions, and the combined region
-hexagonIDRegion1 <- getHexagonID(obj=region1, level="extent", buffer=0.5, print=TRUE)
-hexagonIDRegion2 <- getHexagonID(obj=region2, level="extent", buffer=0.5, print=TRUE)
+hexagonIDRegion1 <- getHexagonID(obj=region1, hexagonCells=hexagonCells, level="extent", buffer=0.5, print=TRUE)
+hexagonIDRegion2 <- getHexagonID(obj=region2, hexagonCells=hexagonCells, level="extent", buffer=0.5, print=TRUE)
 
 # Get hexagon IDs of the combined region
-hexagonIDCombinedRange <- c(hexagonIDRegion1,hexagonIDRegion2)
+hexagonIDCombinedRange <- unique(c(unlist(hexagonIDRegion1),unlist(hexagonIDRegion2)))
 
 # Get connectivity events for the study region (all years, all months, all days, 180 days period)
-connectivityEvents <- getConnectivityEvents(connectivity=oceanographicConnectivity,
-                                            hexagonID=hexagonIDCombinedRange, period=180)
+connectivityEvents <- getConnectivityEvents(connectivity=oceanographicConnectivity,hexagonID=hexagonIDCombinedRange, period=180)
 
 # Get pairwise connectivity estimates between coordinate sites
-pairwiseConnectivity <- getPairwiseConnectivity(connectivityEvents = connectivityEvents,
-                                                hexagonIDFrom = hexagonIDRegion1,
-                                                hexagonIDTo = hexagonIDRegion2,
-                                                connType="Forward",
-                                                value="Probability", steppingStone=FALSE)
+pairwiseConnectivity <- getPairwiseConnectivity(connectivityEvents = connectivityEvents,hexagonIDFrom = hexagonIDRegion1,hexagonIDTo = hexagonIDRegion2,connType="Forward",value="Probability", steppingStone=FALSE)
 
 # Get the connectivity matrix
 pairwiseConnectivityRegions <- pairwiseConnectivity$connectivityMatrix
@@ -57,7 +64,7 @@ plot1
 dev.off()
 
 # Map oceanographic connectivity between populations
-mappedConnectivity <- mapConnectivity(connectivityPairs=pairwiseConnectivity$connectivityPairs)
+mappedConnectivity <- mapConnectivity(connectivityPairs=pairwiseConnectivity$connectivityPairs,hexagonCells=hexagonCells)
 
 # Load the worldmap and crop to the atudy region
 worldMap <- ne_countries(scale = "medium", returnclass = "sf")

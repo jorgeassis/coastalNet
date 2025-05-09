@@ -23,9 +23,9 @@ getPairwiseConnectivity(
 \item 'connectivityEventTravelTime' (numeric, in days) - required if 'value = "Time"'.
 }}
 
-\item{hexagonIDFrom}{A list of character vectors. Each element represents a "from" region (a group of hexagon IDs).}
+\item{hexagonIDFrom}{A list of character vectors. Each element of the list represents a spatial feature (a group of hexagon IDs) "from" which particles where sent from.}
 
-\item{hexagonIDTo}{(Optional) A list of character vectors mirroring the structure of 'hexagonIDFrom', each element representing a "to" region. If not provided, pairwise connectivity is calculated among all pairs within 'hexagonIDFrom'.}
+\item{hexagonIDTo}{(Optional) A list of character vectors mirroring the structure of 'hexagonIDFrom', Each element of the list represents a spatial feature (a group of hexagon IDs) "to" which particles produced connectivity events. If not provided, pairwise connectivity is calculated among all pairs of 'hexagonIDFrom'.}
 
 \item{connType}{A character string specifying the direction of connectivity: "Forward" (default) or "Backward".}
 

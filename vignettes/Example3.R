@@ -1,8 +1,11 @@
 # ---------------------------------------------
-# Clean environment and load packages
 
+# Clean environment
+closeAllConnections()
 rm(list = ls())
 gc(reset=TRUE)
+
+# Load necessary libraries:
 library(coastalNet)
 library(rnaturalearth)
 library(viridis)
@@ -31,20 +34,29 @@ futureRange <- crds(futureRangeRaster, na.rm=TRUE, df=TRUE)
 # ---------------------
 
 # Load database
-oceanographicConnectivity <- getDataBase(myFolder="Database", overwrite=FALSE)
+oceanographicConnectivity <- getDataBase()
+
+# Load hexagons (i.e., source and sink locations)
+hexagonCells <- loadHexagons()
+
+# Inspect the object hexagonCells
+ggplot() + 
+  geom_sf(data = hexagonCells, color="black") +
+  coord_sf(crs= "+proj=robin") +
+  theme_minimal()
 
 # Combine the distribution records of present and future conditions
 combinedRange <- unique(rbind(presentDayRange,futureRange))
 
 # Get hexagon IDs that define the study region
-hexagonIDRegion <- getHexagonID(obj=combinedRange, level="extent", buffer=5, print=TRUE)
+hexagonIDRegion <- getHexagonID(obj=combinedRange, hexagonCells=hexagonCells, level="extent", buffer=5, print=TRUE)
 
 # Get connectivity events for the study region (all years, all months, all days, 30 days period)
 connectivityEvents <- getConnectivityEvents(connectivity=oceanographicConnectivity,hexagonID=hexagonIDRegion, period=30 )
 
 # Get hexagon IDs of the distribution sites
-hexagonIDSitesFrom <- getHexagonID(obj=presentDayRange, level="site", buffer=0, print=FALSE)
-hexagonIDSitesTo <- getHexagonID(obj=futureRange, level="site", buffer=0, print=FALSE)
+hexagonIDSitesFrom <- getHexagonID(obj=presentDayRange, hexagonCells=hexagonCells, level="site", buffer=0, print=FALSE)
+hexagonIDSitesTo <- getHexagonID(obj=futureRange, hexagonCells=hexagonCells, level="site", buffer=0, print=FALSE)
 
 # Get pairwise connectivity estimates between coordinate sites
 pairwiseConnectivity <- getPairwiseConnectivity(connectivityEvents, hexagonIDFrom=hexagonIDSitesFrom, hexagonIDTo=hexagonIDSitesTo, connType="Forward", value="Probability", steppingStone=FALSE)

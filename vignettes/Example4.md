@@ -7,7 +7,7 @@ This code explores explores oceanographic connectivity between regions of the No
 Cleans the R environment and forces garbage collection to ensure a clean workspace. Loads necessary R packages for the analysis, which include coastalNet package.
 
 ```r 
-# Clean environment and load packages
+closeAllConnections()
 rm(list = ls())
 gc(reset=TRUE)
 library(coastalNet)
@@ -40,25 +40,23 @@ Loads the database of connectivity events (downloads also if not already present
 
 ```r 
 # Load database
-oceanographicConnectivity <- getDataBase(myFolder="Database", overwrite=FALSE)
+oceanographicConnectivity <- getDataBase()
+
+# Load hexagons (i.e., source and sink locations)
+hexagonCells <- loadHexagons()
 
 # Get hexagon IDs that define the individual study regions, and the combined region
-hexagonIDRegion1 <- getHexagonID(obj=region1, level="extent", buffer=0.5, print=TRUE)
-hexagonIDRegion2 <- getHexagonID(obj=region2, level="extent", buffer=0.5, print=TRUE)
+hexagonIDRegion1 <- getHexagonID(obj=region1, hexagonCells=hexagonCells, level="extent", buffer=0.5, print=TRUE)
+hexagonIDRegion2 <- getHexagonID(obj=region2, hexagonCells=hexagonCells, level="extent", buffer=0.5, print=TRUE)
 
 # Get hexagon IDs of the combined region
-hexagonIDCombinedRange <- c(hexagonIDRegion1,hexagonIDRegion2)
+hexagonIDCombinedRange <- unique(c(unlist(hexagonIDRegion1),unlist(hexagonIDRegion2)))
 
 # Get connectivity events for the study region (all years, all months, all days, 180 days period)
-connectivityEvents <- getConnectivityEvents(connectivity=oceanographicConnectivity,
-                                            hexagonID=hexagonIDCombinedRange, period=180)
+connectivityEvents <- getConnectivityEvents(connectivity=oceanographicConnectivity,hexagonID=hexagonIDCombinedRange, period=180)
 
 # Get pairwise connectivity estimates between coordinate sites
-pairwiseConnectivity <- getPairwiseConnectivity(connectivityEvents = connectivityEvents,
-                                                hexagonIDFrom = hexagonIDRegion1,
-                                                hexagonIDTo = hexagonIDRegion2,
-                                                connType="Forward",
-                                                value="Probability", steppingStone=FALSE)
+pairwiseConnectivity <- getPairwiseConnectivity(connectivityEvents = connectivityEvents,hexagonIDFrom = hexagonIDRegion1,hexagonIDTo = hexagonIDRegion2,connType="Forward",value="Probability", steppingStone=FALSE)
 ```
 
 ### Pairwise Connectivity Estimates
@@ -84,7 +82,7 @@ plot1 <- pheatmap(pairwiseConnectivityRegions, display_numbers = FALSE, angle_co
 plot1
 
 # Map oceanographic connectivity between populations
-mappedConnectivity <- mapConnectivity(connectivityPairs=pairwiseConnectivity$connectivityPairs)
+mappedConnectivity <- mapConnectivity(connectivityPairs=pairwiseConnectivity$connectivityPairs,hexagonCells=hexagonCells)
 
 # Load the worldmap and crop to the atudy region
 worldMap <- ne_countries(scale = "medium", returnclass = "sf")

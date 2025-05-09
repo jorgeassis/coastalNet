@@ -12,12 +12,13 @@ Cleans the R environment and forces garbage collection to ensure a clean workspa
 
 ```r 
 # Clean environment and load packages
+closeAllConnections()
 rm(list = ls())
 gc(reset=TRUE)
 library(coastalNet)
-library(ggplot2)
 library(rnaturalearth)
 library(viridis)
+library(ggplot2)
 library(sf)
 ```
 
@@ -39,10 +40,13 @@ Loads the database of connectivity events (downloads also if not already present
 
 ```r 
 # Load database
-oceanographicConnectivity <- getDataBase(myFolder="Database", overwrite=FALSE)
+oceanographicConnectivity <- getDataBase()
+
+# Load hexagons (i.e., source and sink locations)
+hexagonCells <- loadHexagons()
 
 # Get hexagon IDs that define the study region
-hexagonIDRegion <- getHexagonID(obj=mediterraneanMPA, level="extent", buffer=6, print=TRUE)
+hexagonIDRegion <- getHexagonID(obj=mediterraneanMPA, hexagonCells=hexagonCells, level="extent", buffer=6, print=TRUE)
 ```
 
 <img src="../img/Example2_img_1.png" alt="Hexagon IDs (in black) defining the study region" style="width:520px;"/>
@@ -55,7 +59,7 @@ hexagonIDRegion <- getHexagonID(obj=mediterraneanMPA, level="extent", buffer=6, 
 connectivityEvents <- getConnectivityEvents(connectivity=oceanographicConnectivity,hexagonID=hexagonIDRegion, period=32 )
 
 # Get hexagon IDs of the MPA sites
-hexagonIDSites <- getHexagonID(obj=mediterraneanMPA, level="site", buffer=0, print=FALSE)
+hexagonIDSites <- getHexagonID(obj=mediterraneanMPA, hexagonCells=hexagonCells, level="site", buffer=0, print=FALSE)
 
 # Get pairwise connectivity estimates between MPA sites
 pairwiseConnectivity <- getPairwiseConnectivity(connectivityEvents, hexagonIDFrom=hexagonIDSites, connType="Forward", value="Probability", steppingStone=FALSE)
@@ -67,13 +71,12 @@ A comprehensive visualization of oceanographic connectivity between MPAs is gene
 
 ```r
 # Map oceanographic connectivity
-mappedConnectivity <- mapConnectivity(connectivityPairs=pairwiseConnectivity$connectivityPairs)
+mappedConnectivity <- mapConnectivity(connectivityPairs=pairwiseConnectivity$connectivityPairs,hexagonCells=hexagonCells)
 
 # Get hexagon IDs that retrieved oceanographic connectivity estimates
-hexagonIDConnected <- unique(c(pairwiseConnectivity$connectivityPairs$FromHexagon,pairwiseConnectivity$connectivityPairs$ToHexagon))
+hexagonIDConnected <- unique(c(pairwiseConnectivity$connectivityPairs$From,pairwiseConnectivity$connectivityPairs$To))
 
 # Get a data.frame of the location of hexagons that retrieved oceanographic connectivity estimates
-data("hexagonCells")
 hexagonCellsConnected <- hexagonCells[hexagonCells$ID %in% hexagonIDConnected,1]
 hexagonCellsConnected <- st_coordinates(st_centroid(hexagonCellsConnected))
 

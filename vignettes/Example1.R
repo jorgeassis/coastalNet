@@ -1,11 +1,15 @@
 # ---------------------------------------------
-# Clean environment and load packages
 
+# Clean R environment:
+closeAllConnections()
 rm(list = ls())
-gc(reset=TRUE)
-library(coastalNet)
-library(ggplot2)
+gc(reset = TRUE)
+
+# Load necessary libraries:
 library(sf)
+library(terra)
+library(ggplot2)
+library(coastalNet)
 library(lme4)
 library(rnaturalearth)
 library(viridis)
@@ -24,19 +28,28 @@ laminariaPopDifferentiation <- read.csv("Laminaria-ochroleuca-JostD.csv", sep=";
 
 # ---------------------
 
-# Load database
-oceanographicConnectivity <- getDataBase(myFolder="Database", overwrite=FALSE)
+# Load database of connectivity
+oceanographicConnectivity <- getDataBase()
+
+# Load hexagons (i.e., source and sink locations)
+hexagonCells <- loadHexagons()
+
+# Inspect the object hexagonCells
+ggplot() + 
+  geom_sf(data = hexagonCells, color="black") +
+  coord_sf(crs= "+proj=robin") +
+  theme_minimal()
 
 # Get hexagon IDs that define the study region
-hexagonIDRegion <- getHexagonID(obj=laminariaRecords, level="extent", buffer=5, print=TRUE)
+hexagonIDRegion <- getHexagonID(obj=laminariaRecords, hexagonCells=hexagonCells, level="extent", buffer=5, print=TRUE)
 
-# Get connectivity events for the study region (all years, all months, all days, 120 days period)
+# Get all connectivity events within the study region (all years, all months, all days, 120 days period)
 connectivityEvents <- getConnectivityEvents(connectivity=oceanographicConnectivity,hexagonID=hexagonIDRegion, period=120 )
 
 # Get hexagon IDs of the sampling sites
-hexagonIDSites <- getHexagonID(obj=laminariaRecords, level="site", buffer=0, print=FALSE)
+hexagonIDSites <- getHexagonID(obj=laminariaRecords, hexagonCells=hexagonCells, level="site", buffer=0, print=FALSE)
 
-# Get pairwise connectivity estimates between coordinate sites
+# Get pairwise connectivity estimates between sampling sites, with stepping-stone events across the strudy site
 pairwiseConnectivity <- getPairwiseConnectivity(connectivityEvents, hexagonIDFrom=hexagonIDSites, connType="Forward", value="Probability", steppingStone=TRUE)
 
 # ---------------------
@@ -71,7 +84,7 @@ plot1 <- ggplot() +
          axis.title.y = element_text(margin = margin(t = 0, r = 18, b = 0, l = 0)) ,
          axis.title.x = element_text(margin = margin(t = 18, r = 0, b = 0, l = 0)) ,
          legend.title = element_blank()) +
-         annotate("label", alpha = 0.5, label.padding=unit(0.5, "lines"), x = -77, y = 0.2, hjust=0,vjust=1 , label = paste0("Adjusted R2: ", format(round(r2, 3), nsmall = 3),"\nPearson's Corr.: ",format(round(Pearson, 3), nsmall = 3)))
+  annotate("label", alpha = 0.5, label.padding=unit(0.5, "lines"), x = -77, y = 0.2, hjust=0,vjust=1 , label = paste0("Adjusted R2: ", format(round(r2, 3), nsmall = 3),"\nPearson's Corr.: ",format(round(Pearson, 3), nsmall = 3)))
 
 pdf(file="../../Example 1 1.pdf", width=8, height=8)
 plot1
@@ -80,18 +93,16 @@ dev.off()
 # ---------------------
 
 # Map oceanographic connectivity between populations
-mappedConnectivity <- mapConnectivity(connectivityPairs=pairwiseConnectivity$connectivityPairs)
+mappedConnectivity <- mapConnectivity(connectivityPairs=pairwiseConnectivity$connectivityPairs,hexagonCells=hexagonCells)
 
 # Load the worldmap and crop to the atudy region
 worldMap <- ne_countries(scale = "medium", returnclass = "sf")
 worldMap <- st_crop(worldMap,mappedConnectivity$lineConnections)
 
 # Get hexagon IDs that retrieved oceanographic connectivity estimates
-hexagonIDConnected <- unique(c(mappedConnectivity$mappingData$FromHexagon,mappedConnectivity$mappingData$FromHexagon))
+hexagonIDConnected <- unique(c(mappedConnectivity$mappingData$From,mappedConnectivity$mappingData$From))
 
 # Get a data.frame of the location of hexagons that retrieved oceanographic connectivity estimates
-data("hexagonCells")
-
 hexagonCellsConnected <- hexagonCells[hexagonCells$ID %in% hexagonIDConnected,1]
 hexagonCellsConnected <- st_coordinates(st_centroid(hexagonCellsConnected))
 

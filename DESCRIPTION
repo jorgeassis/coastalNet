@@ -1,6 +1,6 @@
 Package: coastalNet
 Title: Facilitating Oceanographic Connectivity Analysis
-Version: 1.0
+Version: 1.1
 Authors@R: 
     person("Jorge", "Assis", , "jorgemfa@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "https://orcid.org/0000-0002-6624-4820"))

@@ -6,8 +6,8 @@
 #'  * 'connectivityEventStartHexagon' (character)
 #'  * 'connectivityEventEndHexagon' (character)
 #'  * 'connectivityEventTravelTime' (numeric, in days) - required if 'value = "Time"'.
-#' @param hexagonIDFrom A list of character vectors. Each element represents a "from" region (a group of hexagon IDs).
-#' @param hexagonIDTo (Optional) A list of character vectors mirroring the structure of 'hexagonIDFrom', each element representing a "to" region. If not provided, pairwise connectivity is calculated among all pairs within 'hexagonIDFrom'.
+#' @param hexagonIDFrom A list of character vectors. Each element of the list represents a spatial feature (a group of hexagon IDs) "from" which particles where sent from.
+#' @param hexagonIDTo (Optional) A list of character vectors mirroring the structure of 'hexagonIDFrom', Each element of the list represents a spatial feature (a group of hexagon IDs) "to" which particles produced connectivity events. If not provided, pairwise connectivity is calculated among all pairs of 'hexagonIDFrom'.
 #' @param connType A character string specifying the direction of connectivity: "Forward" (default) or "Backward".
 #' @param value A character string specifying the connectivity metric: "Probability" (default), "Events", or "Time".
 #' @param steppingStone (Optional) A logical flag indicating whether to consider stepping-stone connectivity. Defaults to 'FALSE'.
@@ -53,306 +53,317 @@
 #' @export getPairwiseConnectivity
 
 getPairwiseConnectivity <- function(connectivityEvents=NULL, hexagonIDFrom=NULL, hexagonIDTo=NULL, connType="Forward", value="Probability", steppingStone=FALSE, nStepStones=NULL, parallelCores=NULL){
-  
-  cat("\n")
-  cat("# ---------------------------------------------","\n")
-  cat("Get pairwise connectivity estimates","\n")
-  cat("Connectivity type:",connType,"\n")
-  cat("Connectivity estimate:",value,"\n")
-  cat("Stepping stone connectivity:",steppingStone,"\n")
-  
-  if( steppingStone ) { 
-    cat("Number of maximum stepping stone events:",ifelse(!is.null(nStepStones),nStepStones,"Unlimited"),"\n") 
-    cat("Number of parallel cores:",ifelse(!is.null(parallelCores),parallelCores,detectCores() - 1),"\n")
-  }
-  
-  if( missing(connectivityEvents)) { stop("The connectivityEvents parameter is required.") }
-  
-  if( class(hexagonIDFrom) != "list" ) { stop("hexagonIDFrom needs to be a list\n")  }
-  if( ! is.null(hexagonIDTo)) { if (class(hexagonIDTo) != "list" ) { stop("hexagonIDTo needs to be a list\n")  } }
-  
-  data("referenceTable")
-  
-  ## -------------
-  
-  options(warn=-1)
-  
-  if( is.null(hexagonIDFrom)) { hexagonIDFrom <- list( unique(connectivityEvents$connectivityEventStartHexagon )) }
-  if( is.null(hexagonIDTo)) { hexagonIDTo <- hexagonIDFrom }
-  
-  cat("From:",length(hexagonIDFrom), "element(s) /",length(unlist(hexagonIDFrom)),"hexagons","\n")
-  cat("To:",length(hexagonIDTo), "element(s) /",length(unlist(hexagonIDTo)),"hexagons","\n")
-  cat("# ---------------------------------------------","\n")
-  
-  ## ---------------------------------------------------
-  
-  if( value == "Probability" | value == "Events" ) {
     
-    connectivityEvents[, value := 1]
-    pairwiseConnectivity <- connectivityEvents[,list(value = sum(value)), by = 'connectivityEventStartHexagon,connectivityEventEndHexagon']
+    cat("\n")
+    cat("# ---------------------------------------------","\n")
+    cat("Get pairwise connectivity estimates","\n")
+    cat("Connectivity type:",connType,"\n")
+    cat("Connectivity estimate:",value,"\n")
+    cat("Stepping stone connectivity:",steppingStone,"\n")
     
-    if( connType == "Forward" ) { 
+    if( steppingStone ) { 
+      cat("Number of maximum stepping stone events:",ifelse(!is.null(nStepStones),nStepStones,"Unlimited"),"\n") 
+      cat("Number of parallel cores:",ifelse(!is.null(parallelCores),parallelCores,detectCores() - 1),"\n")
+    }
+    
+    if( missing(connectivityEvents)) { stop("The connectivityEvents parameter is required.") }
+    
+    if( class(hexagonIDFrom) != "list" ) { stop("hexagonIDFrom needs to be a list\n")  }
+    if( ! is.null(hexagonIDTo)) { if (class(hexagonIDTo) != "list" ) { stop("hexagonIDTo needs to be a list\n")  } }
+    
+    ## -------------
+    
+    options(warn=-1)
+    
+    if( is.null(hexagonIDFrom)) { hexagonIDFrom <- list( unique(connectivityEvents$connectivityEventStartHexagon )) }
+    if( is.null(hexagonIDTo)) { hexagonIDTo <- hexagonIDFrom }
+    
+    cat("From:",length(hexagonIDFrom), "spatial feature(s) /",length(unlist(hexagonIDFrom)),"hexagons","\n")
+    cat("To:",length(hexagonIDTo), "spatial feature(s) /",length(unlist(hexagonIDTo)),"hexagons","\n")
+    cat("# ---------------------------------------------","\n")
+    
+    ## ---------------------------------------------------
+    
+    if( value == "Probability" | value == "Events" ) {
       
-      yearMin <- min(connectivityEvents$connectivityEventStartYear)
-      yearMax <- max(connectivityEvents$connectivityEventStartYear)
-      months <- unique(connectivityEvents$connectivityEventStartMonth)
-      days <- unique(connectivityEvents$connectivityEventStartDay)
+      connectivityEvents[, value := 1]
+      pairwiseConnectivity <- connectivityEvents[,list(value = sum(value)), by = 'connectivityEventStartHexagon,connectivityEventEndHexagon']
       
-      bd <- as.Date(paste0(min(yearMin),"-01-01"))
-      ed <- as.Date(paste0(max(yearMax),"-12-31"))
-      seqd <- seq(bd, ed, by="1 day")
-      seqd <- seqd[ which( as.numeric(substr(seqd,6,7)) %in% months) ]
-      seqd <- seqd[ which( as.numeric(substr(seqd,9,10)) %in% days) ]
-      eventsPerCell <- length(seqd)
+      if( connType == "Forward" ) { 
+        
+        yearMin <- min(connectivityEvents$connectivityEventStartYear)
+        yearMax <- max(connectivityEvents$connectivityEventStartYear)
+        months <- unique(connectivityEvents$connectivityEventStartMonth)
+        days <- unique(connectivityEvents$connectivityEventStartDay)
+        
+        bd <- as.Date(paste0(min(yearMin),"-01-01"))
+        ed <- as.Date(paste0(max(yearMax),"-12-31"))
+        seqd <- seq(bd, ed, by="1 day")
+        seqd <- seqd[ which( as.numeric(substr(seqd,6,7)) %in% months) ]
+        seqd <- seqd[ which( as.numeric(substr(seqd,9,10)) %in% days) ]
+        eventsPerCell <- length(seqd)
+        
+      }
+      
+      if( connType == "Backward" ) { 
+        
+        endHexagonEvents <- aggregate(connectivityEvents, value ~ connectivityEventEndHexagon, FUN=sum)
+        eventsPerCell <- sapply( pairwiseConnectivity$connectivityEventEndHexagon, function(x) { endHexagonEvents[ endHexagonEvents$connectivityEventEndHexagon == x , 2 ] } )
+        
+      }
       
     }
     
-    if( connType == "Backward" ) { 
+    if( value == "Probability" ) {
       
-      endHexagonEvents <- aggregate(connectivityEvents, value ~ connectivityEventEndHexagon, FUN=sum)
-      eventsPerCell <- sapply( pairwiseConnectivity$connectivityEventEndHexagon, function(x) { endHexagonEvents[ endHexagonEvents$connectivityEventEndHexagon == x , 2 ] } )
+      pairwiseConnectivity[, value := value / eventsPerCell ]
       
     }
     
-  }
-  
-  if( value == "Probability" ) {
-    
-    pairwiseConnectivity[, value := value / eventsPerCell ]
-    
-  }
-  
-  if( value == "Time" ) {
-    
-    if( connType == "Forward" ) { 
-      pairwiseConnectivity <- connectivityEvents[,list(value = mean(value)), by = 'connectivityEventStartHexagon,connectivityEventEndHexagon']
+    if( value == "Time" ) {
+      
+      if( connType == "Forward" ) { 
+        pairwiseConnectivity <- connectivityEvents[,list(value = mean(value)), by = 'connectivityEventStartHexagon,connectivityEventEndHexagon']
+      }
+      
+      if( connType == "Backward" ) { 
+        pairwiseConnectivity <- connectivityEvents[,list(value = mean(value)), by = 'connectivityEventEndHexagon,connectivityEventStartHexagon']
+        pairwiseConnectivity <- pairwiseConnectivity[,.(connectivityEventStartHexagon,connectivityEventEndHexagon,value)]
+      }
+      
     }
     
-    if( connType == "Backward" ) { 
-      pairwiseConnectivity <- connectivityEvents[,list(value = mean(value)), by = 'connectivityEventEndHexagon,connectivityEventStartHexagon']
-      pairwiseConnectivity <- pairwiseConnectivity[,.(connectivityEventStartHexagon,connectivityEventEndHexagon,value)]
-    }
+    names(pairwiseConnectivity) <- c("hexagonsFrom","hexagonsTo","value")
+    pairwiseConnectivity$steps <- 1
     
-  }
-  
-  names(pairwiseConnectivity) <- c("hexagonsFrom","hexagonsTo","value")
-  
-  ## ---------------------------------------------------
-  
-  hexagonIDFromUl <- unique(unlist(hexagonIDFrom))
-  missingFrom <- hexagonIDFromUl[which( ! hexagonIDFromUl %in% pairwiseConnectivity$hexagonsFrom )]
-  if( length(missingFrom) > 0) {
-    for( m in missingFrom) {
-      pairwiseConnectivity <- rbind(pairwiseConnectivity,pairwiseConnectivity[1,])
-      pairwiseConnectivity[nrow(pairwiseConnectivity),"hexagonsFrom"] <- m
-      pairwiseConnectivity[nrow(pairwiseConnectivity),"value"] <- 0
-    }
-  }
-  
-  hexagonIDToUl <- unique(unlist(hexagonIDTo))
-  missingTo <- hexagonIDToUl[which( ! hexagonIDToUl %in% pairwiseConnectivity$hexagonsTo )]
-  if( length(missingTo) > 0) {
-    for( m in missingTo) {
-      pairwiseConnectivity <- rbind(pairwiseConnectivity,pairwiseConnectivity[1,])
-      pairwiseConnectivity[nrow(pairwiseConnectivity),"hexagonsTo"] <- m
-      pairwiseConnectivity[nrow(pairwiseConnectivity),"value"] <- 0
-    }
-  }
-  
-  ## ---------------------------------------------------
-  
-  connectivityEventsAggSquare <- as.matrix(dcast(pairwiseConnectivity, hexagonsFrom ~ hexagonsTo, mean, value.var = "value"))
-  connectivityEventsAggSquareFromNames <- as.character(connectivityEventsAggSquare[,1])
-  connectivityEventsAggSquareToNames <- colnames(connectivityEventsAggSquare)[-1]
-  connectivityEventsAggSquare <- connectivityEventsAggSquare[,-1]
-  rownames(connectivityEventsAggSquare) <- connectivityEventsAggSquareFromNames
-  colnames(connectivityEventsAggSquare) <- connectivityEventsAggSquareToNames
-  connectivityEventsAggSquare[is.na(connectivityEventsAggSquare)] <- 0
-  
-  if( length(hexagonIDFrom) == length(unlist(hexagonIDFrom)) ) {
+    ## ---------------------------------------------------
     
-    pairwiseConnectivitySquare <- matrix(0,ncol=length(hexagonIDTo),nrow=length(hexagonIDFrom))
-    hexagonIDFromUl <- unlist(hexagonIDFrom)
-    hexagonIDToUl <- unlist(hexagonIDTo)
-    
-    row.i <- match(hexagonIDFromUl,rownames(connectivityEventsAggSquare))
-    for( i in 1:length(row.i) ) {
-      pairwiseConnectivitySquare[i,] <- connectivityEventsAggSquare[row.i[i],match(hexagonIDToUl,colnames(connectivityEventsAggSquare))]
-    }
-  }
-  
-  if( length(hexagonIDFrom) != length(unlist(hexagonIDFrom)) ) {
-    
-    pairwiseConnectivitySquare <- matrix(NA,ncol=length(hexagonIDTo),nrow=length(hexagonIDFrom))
-    
-    for( i in 1:length(hexagonIDFrom) ) {
-      for( j in 1:length(hexagonIDTo) ) {
-        val <- unlist(pairwiseConnectivity[ hexagonsFrom %in% hexagonIDFrom[[i]] & hexagonsTo %in% hexagonIDTo[[j]] , "value"])
-        pairwiseConnectivitySquare[i,j] <- ifelse(length(val) == 0,0, mean(val))
+    hexagonIDFromUl <- unique(unlist(hexagonIDFrom))
+    missingFrom <- hexagonIDFromUl[which( ! hexagonIDFromUl %in% pairwiseConnectivity$hexagonsFrom )]
+    if( length(missingFrom) > 0) {
+      for( m in missingFrom) {
+        pairwiseConnectivity <- rbind(pairwiseConnectivity,pairwiseConnectivity[1,])
+        pairwiseConnectivity[nrow(pairwiseConnectivity),"hexagonsFrom"] <- m
+        pairwiseConnectivity[nrow(pairwiseConnectivity),"value"] <- 0
       }
     }
-  }
-  
-  pairwiseConnectivitySquareSteps <- pairwiseConnectivitySquare
-  
-  if( steppingStone ) {
     
-    comb <- pairwiseConnectivity
-    comb <- as.data.frame( comb[ sort(comb$value , decreasing = TRUE, index.return =TRUE)$ix , c("hexagonsFrom","hexagonsTo","value")] )
-    graph.obj <- graph.edgelist( cbind( as.character( comb[,1]) , as.character(comb[,2]) ) , directed = TRUE )
+    hexagonIDToUl <- unique(unlist(hexagonIDTo))
+    missingTo <- hexagonIDToUl[which( ! hexagonIDToUl %in% pairwiseConnectivity$hexagonsTo )]
+    if( length(missingTo) > 0) {
+      for( m in missingTo) {
+        pairwiseConnectivity <- rbind(pairwiseConnectivity,pairwiseConnectivity[1,])
+        pairwiseConnectivity[nrow(pairwiseConnectivity),"hexagonsTo"] <- m
+        pairwiseConnectivity[nrow(pairwiseConnectivity),"value"] <- 0
+      }
+    }
     
-    # Hock, Karlo Mumby, Peter J 2015
-    if(value == "Probability") { igraph::E(graph.obj)$weight = ifelse(-log(comb[,3]) == Inf,0,-log(comb[,3])) }
+    ## ---------------------------------------------------
     
-    # The wheight has a negative impact on finding the closest path
-    if(value == "Time" | value == "Events" ) { igraph::E(graph.obj)$weight = comb[,3] }
-    
-    graph.obj <- delete.edges(graph.obj, which( igraph::E(graph.obj)$weight == 0) )
-    graph.obj <- simplify(graph.obj)
-    
-    if(is.null(parallelCores)){ numberCores <- detectCores(logical = TRUE) - 1 } else { numberCores <- parallelCores }
-    if(numberCores == 0) { numberCores <- 1 }
-    
-    cl <- makeCluster(numberCores)
-    registerDoParallel(cl)
-    
-    pairwiseConnectivity <- foreach(i=1:length(hexagonIDFrom), .combine = rbind, .verbose=FALSE, .packages=c("igraph","data.table")) %dopar% { 
+    if( steppingStone ) {
       
-      res <- data.frame()
+      comb <- pairwiseConnectivity
+      comb <- as.data.frame( comb[ sort(comb$value , decreasing = TRUE, index.return =TRUE)$ix , c("hexagonsFrom","hexagonsTo","value")] )
+      graph.obj <- graph.edgelist( cbind( as.character( comb[,1]) , as.character(comb[,2]) ) , directed = TRUE )
       
-      for( j in 1:length(hexagonIDTo) ) {
+      # Hock, Karlo Mumby, Peter J 2015
+      if(value == "Probability") { igraph::E(graph.obj)$weight = ifelse(-log(comb[,3]) == Inf,0,-log(comb[,3])) }
+      
+      # The wheight has a negative impact on finding the closest path
+      if(value == "Time" | value == "Events" ) { igraph::E(graph.obj)$weight = comb[,3] }
+      
+      graph.obj <- delete.edges(graph.obj, which( igraph::E(graph.obj)$weight == 0) )
+      graph.obj <- simplify(graph.obj)
+      
+      if(is.null(parallelCores)){ numberCores <- detectCores(logical = TRUE) - 1 } else { numberCores <- parallelCores }
+      if(numberCores == 0) { numberCores <- 1 }
+      
+      cl <- makeCluster(numberCores)
+      registerDoParallel(cl)
+      
+      pairwiseConnectivity <- foreach(from=unlist(hexagonIDFrom), .combine = rbind, .verbose=FALSE, .packages=c("igraph","data.table")) %dopar% { 
         
         temp.res <- data.frame()
         
-        for( from in hexagonIDFrom[[i]] ) {
+        for( to in unlist(hexagonIDTo) ) {
           
-          res.connectivity.to <- numeric(0)
-          res.connectivity.to.steps <- numeric(0)
+          stones.t <- get.shortest.paths(graph.obj, as.character( from ) , as.character( to ),mode="out")$vpath
+          stones.t <- as.numeric(names(stones.t[[1]]))
+          stones.t.interm <- cbind(stones.t[-length(stones.t)],stones.t[-1])
+          path.values <- apply( stones.t.interm , 1 , function(z) { comb[ comb[,1] == z[1] & comb[,2] == z[2] , 3 ][1] }   )
           
-          for( to in hexagonIDTo[[j]] ) {
-            
-            stones.t <- get.shortest.paths(graph.obj, as.character( from ) , as.character( to ),mode="out")$vpath
-            stones.t <- as.numeric(names(stones.t[[1]]))
-            stones.t.interm <- cbind(stones.t[-length(stones.t)],stones.t[-1])
-            path.values <- apply( stones.t.interm , 1 , function(z) { comb[ comb[,1] == z[1] & comb[,2] == z[2] , 3 ][1] }   )
-            
-            if( ! is.null(nStepStones)) { if( length(path.values) > nStepStones ) { path.values[] <- 0 }  }
-            if( length(path.values) == 0) { path.values <- 0 }
-            
-            res.connectivity.to.steps <- c(res.connectivity.to.steps, ifelse( sum(path.values) != 0 ,length(path.values) , 0  ) )
-            
-            if( value == "Probability") {  path.values <- apply( t(path.values) , 1 , prod )  }
-            if( value == "Time" | value == "Events" ) {  path.values <- apply( t(path.values) , 1 , sum )  }
-            
-            if( from == to ) { path.values <- pairwiseConnectivitySquare[i,j] }
-            
-            res.connectivity.to <- c(res.connectivity.to,path.values)
-            
-          }
+          if( ! is.null(nStepStones)) { if( length(path.values) > nStepStones ) { path.values[] <- 0 }  }
+          if( length(path.values) == 0 | sum(path.values) == 0 ) { path.values <- 0 }
           
-          temp.res <- rbind(temp.res ,
-                            data.frame( hexagonsFrom = i,
-                                        hexagonsTo = j , 
-                                        value = mean(res.connectivity.to, na.rm=T),
-                                        steps = mean(res.connectivity.to.steps, na.rm=T)))
+          res.connectivity.to.steps <- ifelse( sum(path.values) != 0 ,length(path.values) , 0  )
           
+          if( value == "Probability") {  path.values <- apply( t(path.values) , 1 , prod )  }
+          if( value == "Time" | value == "Events" ) {  path.values <- apply( t(path.values) , 1 , sum )  }
+          
+          if( from == to ) { path.values <- as.numeric(pairwiseConnectivity[pairwiseConnectivity$hexagonsFrom == from & pairwiseConnectivity$hexagonsTo == to,"value"]) }
+          
+          temp.res <- rbind(temp.res,
+                            data.frame( hexagonsFrom = from,
+                                        hexagonsTo = to , 
+                                        value = path.values,
+                                        steps = res.connectivity.to.steps))
           
         }
         
-        temp.res <- data.table(temp.res)
-        temp.res <- as.data.frame(temp.res[, .(value  = mean(value), steps  = mean(steps) ), by=.(hexagonsFrom, hexagonsTo)] )
-        res <- rbind(res,temp.res)
+        temp.res <- temp.res[temp.res$value != 0,]
+        return(temp.res)
         
       }
       
-      ## ---------------------
+      stopCluster(cl) ; rm(cl)
       
-      return(res)
+      ## --------------
       
-      ## ---------------------
+      pairwiseConnectivity <- as.data.table(pairwiseConnectivity)
       
     }
     
-    stopCluster(cl) ; rm(cl)
+    ## ---------------------------------------------------
+    
+    # Restrict to resquested pairs
+    
+    pairwiseConnectivity <- pairwiseConnectivity[pairwiseConnectivity$hexagonsFrom %in% unique(unlist(hexagonIDFrom)) & pairwiseConnectivity$hexagonsTo %in% unique(unlist(hexagonIDTo)), ]
+    
+    # Get connected hexagons
+    
+    hexagonsConnected <- unlist(unique(pairwiseConnectivity[,"hexagonsTo"]))
+    names(hexagonsConnected) <- NULL
+    hexagonsNotConnected <- unlist(hexagonIDTo)
+    hexagonsNotConnected <- hexagonsNotConnected[ ! hexagonsNotConnected %in% hexagonsConnected ]
+    names(hexagonsNotConnected) <- NULL
+    
+    ## ---------------------------------------------------
+    
+    hexagonIDFromUl <- unique(unlist(hexagonIDFrom))
+    missingFrom <- hexagonIDFromUl[which( ! hexagonIDFromUl %in% pairwiseConnectivity$hexagonsFrom )]
+    if( length(missingFrom) > 0) {
+      for( m in missingFrom) {
+        pairwiseConnectivity <- rbind(pairwiseConnectivity,pairwiseConnectivity[1,])
+        pairwiseConnectivity[nrow(pairwiseConnectivity),"hexagonsFrom"] <- m
+        pairwiseConnectivity[nrow(pairwiseConnectivity),"value"] <- 0
+      }
+    }
+    
+    hexagonIDToUl <- unique(unlist(hexagonIDTo))
+    missingTo <- hexagonIDToUl[which( ! hexagonIDToUl %in% pairwiseConnectivity$hexagonsTo )]
+    if( length(missingTo) > 0) {
+      for( m in missingTo) {
+        pairwiseConnectivity <- rbind(pairwiseConnectivity,pairwiseConnectivity[1,])
+        pairwiseConnectivity[nrow(pairwiseConnectivity),"hexagonsTo"] <- m
+        pairwiseConnectivity[nrow(pairwiseConnectivity),"value"] <- 0
+      }
+    }
+    
+    ## ---------------------------------------------------
+    
+    # Produce results at the hexagon level
+    
+    if( length(hexagonIDFrom) == length(unlist(hexagonIDFrom)) ) {
+      
+      pairwiseConnectivitySquare <- as.matrix(dcast(pairwiseConnectivity, hexagonsFrom ~ hexagonsTo, mean, value.var = "value"))
+      connectivityEventsAggSquareFromNames <- as.character(pairwiseConnectivitySquare[,1])
+      connectivityEventsAggSquareToNames <- colnames(pairwiseConnectivitySquare)[-1]
+      pairwiseConnectivitySquare <- pairwiseConnectivitySquare[,-1]
+      rownames(pairwiseConnectivitySquare) <- connectivityEventsAggSquareFromNames
+      colnames(pairwiseConnectivitySquare) <- connectivityEventsAggSquareToNames
+      
+      pairwiseConnectivitySquareSteps <- as.matrix(dcast(pairwiseConnectivity, hexagonsFrom ~ hexagonsTo, mean, value.var = "steps"))
+      pairwiseConnectivitySquareSteps <- pairwiseConnectivitySquareSteps[,-1]
+      rownames(pairwiseConnectivitySquareSteps) <- connectivityEventsAggSquareFromNames
+      colnames(pairwiseConnectivitySquareSteps) <- connectivityEventsAggSquareToNames
+      
+    }
+    
+    # Produce results at the feature level. Aggregate polygon at feature
+    
+    if( length(hexagonIDFrom) != length(unlist(hexagonIDFrom)) ) {
+      
+      pairwiseConnectivitySquare <- matrix(NA,ncol=length(hexagonIDTo),nrow=length(hexagonIDFrom))
+      pairwiseConnectivitySquareSteps <- matrix(NA,ncol=length(hexagonIDTo),nrow=length(hexagonIDFrom))
+      
+      for( i in 1:length(hexagonIDFrom) ) {
+        for( j in 1:length(hexagonIDTo) ) {
+          
+          val <- unlist(pairwiseConnectivity[ hexagonsFrom %in% hexagonIDFrom[[i]] & hexagonsTo %in% hexagonIDTo[[j]] , "value"])
+          pairwiseConnectivitySquare[i,j] <- ifelse(length(val) == 0,0, mean(val))
+          
+          val <- unlist(pairwiseConnectivity[ hexagonsFrom %in% hexagonIDFrom[[i]] & hexagonsTo %in% hexagonIDTo[[j]] , "steps"])
+          pairwiseConnectivitySquareSteps[i,j] <- ifelse(length(val) == 0,0, mean(val))
+          
+        }
+      }
+      
+      rownames(pairwiseConnectivitySquare) <- as.character(sapply(1:length(hexagonIDFrom) , function(x) ifelse(!is.null(names(hexagonIDFrom)[x]), names(hexagonIDFrom)[x] , x) ))
+      colnames(pairwiseConnectivitySquare) <- as.character(sapply(1:length(hexagonIDTo) , function(x) ifelse(!is.null(names(hexagonIDTo)[x]), names(hexagonIDTo)[x] , x) ))
+      
+      rownames(pairwiseConnectivitySquareSteps) <- as.character(sapply(1:length(hexagonIDFrom) , function(x) ifelse(!is.null(names(hexagonIDFrom)[x]), names(hexagonIDFrom)[x] , x) ))
+      colnames(pairwiseConnectivitySquareSteps) <- as.character(sapply(1:length(hexagonIDTo) , function(x) ifelse(!is.null(names(hexagonIDTo)[x]), names(hexagonIDTo)[x] , x) ))
+      
+    }
+    
+    # -----------
+    
+    pairwiseConnectivitySquare <- pairwiseConnectivitySquare[match(as.character(unlist(hexagonIDFrom)),rownames(pairwiseConnectivitySquare)),match(as.character(unlist(hexagonIDTo)),colnames(pairwiseConnectivitySquare))]
+    pairwiseConnectivitySquareSteps <- pairwiseConnectivitySquareSteps[match(as.character(unlist(hexagonIDFrom)),rownames(pairwiseConnectivitySquareSteps)),match(as.character(unlist(hexagonIDTo)),colnames(pairwiseConnectivitySquareSteps))]
+    
+    pairwiseConnectivitySquare[is.na(pairwiseConnectivitySquare)] <- 0
+    pairwiseConnectivitySquareSteps[is.na(pairwiseConnectivitySquareSteps)] <- 0
+    
+    # -----------
+    
+    names(pairwiseConnectivity) <- c("From","To","Value","Steps")
+    pairwiseConnectivity <- pairwiseConnectivity[which(pairwiseConnectivity$Value != 0), ]
+    pairwiseConnectivity$From <- as.character(pairwiseConnectivity$From)
+    pairwiseConnectivity$To <- as.character(pairwiseConnectivity$To)
+    
+    # ------
+    
+    comb <- as.data.frame(pairwiseConnectivity)
+    comb <- comb[ comb[,1] != comb[,2] ,]
+    comb <- as.data.frame( comb[ sort(comb[,"Value"] , decreasing = TRUE, index.return =TRUE)$ix , c("From","To","Value")] )
+    graph.obj <- graph.edgelist( cbind( as.character( comb[,1]) , as.character(comb[,2]) ) , directed = TRUE )
+    igraph::E(graph.obj)$weight = comb[,3] # Hock, Karlo Mumby, Peter J 2015
+    graph.obj <- delete_edges(graph.obj, which( E(graph.obj)$weight ==0) )
+    graph.obj <- delete_edges(graph.obj, which( is.na(E(graph.obj)$weight) ))
+    graph.obj <- simplify(graph.obj)
     
     ## --------------
     
-    pairwiseConnectivity <- as.data.table(pairwiseConnectivity)
+    options(warn=0)
     
-    connectivityEventsAggSquare <- dcast(pairwiseConnectivity, hexagonsFrom ~ hexagonsTo, mean, value.var = "value")
+    featuresConnected <- unique(pairwiseConnectivity$To)
     
-    connectivityEventsAggSquareFromNames <- as.character(unlist(connectivityEventsAggSquare[,1]))
-    connectivityEventsAggSquareToNames <- colnames(connectivityEventsAggSquare)[-1]
-    connectivityEventsAggSquare <- connectivityEventsAggSquare[,-1]
+    if( length(hexagonIDFrom) == length(unlist(hexagonIDFrom)) & sum( names(hexagonIDTo) %in% featuresConnected ) == 0 ) {
+      
+      names(hexagonIDTo) <- as.character(unlist(hexagonIDTo))
+      
+    } 
     
-    rownames(connectivityEventsAggSquare) <- connectivityEventsAggSquareFromNames
-    colnames(connectivityEventsAggSquare) <- connectivityEventsAggSquareToNames
-    connectivityEventsAggSquare[is.na(connectivityEventsAggSquare)] <- 0
-    pairwiseConnectivitySquare <- connectivityEventsAggSquare
+    featuresConnected <- names(hexagonIDTo)[ which(names(hexagonIDTo) %in% featuresConnected) ]
+    featuresNotConnected <- names(hexagonIDTo)[ which(! names(hexagonIDTo) %in% featuresConnected) ]
     
-    connectivityEventsAggSquareSteps <- dcast(pairwiseConnectivity, hexagonsFrom ~ hexagonsTo, mean, value.var = "steps")
-    connectivityEventsAggSquareFromNames <- as.character(unlist(connectivityEventsAggSquareSteps[,1]))
-    connectivityEventsAggSquareToNames <- colnames(connectivityEventsAggSquareSteps)[-1]
-    connectivityEventsAggSquareSteps <- connectivityEventsAggSquareSteps[,-1]
-    rownames(connectivityEventsAggSquareSteps) <- connectivityEventsAggSquareFromNames
-    colnames(connectivityEventsAggSquareSteps) <- connectivityEventsAggSquareToNames
-    connectivityEventsAggSquareSteps[is.na(connectivityEventsAggSquareSteps)] <- 0
-    pairwiseConnectivitySquareSteps <- connectivityEventsAggSquareSteps
+    if( is.null(featuresNotConnected)) { featuresNotConnected <- NA }
+    if( length(featuresNotConnected) == 0 ) { featuresNotConnected <- NA }
+    if( is.null(hexagonsNotConnected)) { hexagonsNotConnected <- NA }
+    if( length(hexagonsNotConnected) == 0 ) { hexagonsNotConnected <- NA }
     
-  }
-  
-  rownames(pairwiseConnectivitySquare) <- as.character(sapply(1:length(hexagonIDFrom) , function(x) ifelse(!is.null(names(hexagonIDFrom)[x]), names(hexagonIDFrom)[x] , x) ))
-  colnames(pairwiseConnectivitySquare) <- as.character(sapply(1:length(hexagonIDTo) , function(x) ifelse(!is.null(names(hexagonIDTo)[x]), names(hexagonIDTo)[x] , x) ))
-  
-  rownames(pairwiseConnectivitySquareSteps) <- as.character(sapply(1:length(hexagonIDFrom) , function(x) ifelse(!is.null(names(hexagonIDFrom)[x]), names(hexagonIDFrom)[x] , x) ))
-  colnames(pairwiseConnectivitySquareSteps) <- as.character(sapply(1:length(hexagonIDTo) , function(x) ifelse(!is.null(names(hexagonIDTo)[x]), names(hexagonIDTo)[x] , x) ))
-  
-  pairwiseConnectivity <- as.table(as.matrix(pairwiseConnectivitySquare))
-  rownames(pairwiseConnectivity) <- rownames(pairwiseConnectivitySquare)
-  colnames(pairwiseConnectivity) <- colnames(pairwiseConnectivitySquare)
-  pairwiseConnectivity <- as.data.frame(pairwiseConnectivity)
-  pairwiseConnectivity$Steps <- as.data.frame(as.table(as.matrix(pairwiseConnectivitySquareSteps)))[,3]
-  
-  names(pairwiseConnectivity) <- c("From","To","Value","Steps")
-  pairwiseConnectivity <- pairwiseConnectivity[which(pairwiseConnectivity$Value != 0), ]
-  pairwiseConnectivity$From <- as.character(pairwiseConnectivity$From)
-  pairwiseConnectivity$To <- as.character(pairwiseConnectivity$To)
-  
-  comb <- pairwiseConnectivity
-  comb <- comb[ comb[,1] != comb[,2] ,]
-  comb <- as.data.frame( comb[ sort(comb[,"Value"] , decreasing = TRUE, index.return =TRUE)$ix , c("From","To","Value")] )
-  graph.obj <- graph.edgelist( cbind( as.character( comb[,1]) , as.character(comb[,2]) ) , directed = TRUE )
-  igraph::E(graph.obj)$weight = comb[,3] # Hock, Karlo Mumby, Peter J 2015
-  graph.obj <- delete.edges(graph.obj, which( E(graph.obj)$weight ==0) )
-  graph.obj <- delete.edges(graph.obj, which( is.na(E(graph.obj)$weight) ))
-  graph.obj <- simplify(graph.obj)
-  
-  ## --------------
-  
-  options(warn=0)
-  
-  if(is.null(names(hexagonIDTo))) { names(hexagonIDTo) <- as.character(1:length(hexagonIDTo)) }
-  if(is.null(names(hexagonIDFrom))) { names(hexagonIDFrom) <- as.character(1:length(hexagonIDFrom)) }
-  
-  sitesConnected <- unique(pairwiseConnectivity$To)
-  sitesConnected <- names(hexagonIDTo)[ which(names(hexagonIDTo) %in% sitesConnected) ]
-  sitesNotConnected <- names(hexagonIDTo)[ which(! names(hexagonIDTo) %in% sitesConnected) ]
-  
-  if( length(sitesNotConnected) == 0) { sitesNotConnected <- NA }
-  if( ! "Steps" %in% colnames(pairwiseConnectivity) ) { pairwiseConnectivity$Steps <- 1 }
-  
-  ## --------------
-  
-  pairwiseConnectivity$FromHexagon <- sapply(match(pairwiseConnectivity$From , names(hexagonIDFrom)), function(x) { hexagonIDFrom[[x]]} )
-  pairwiseConnectivity$ToHexagon <- sapply(match(pairwiseConnectivity$To , names(hexagonIDTo)), function(x) { hexagonIDTo[[x]]} )
-  pairwiseConnectivity <- pairwiseConnectivity[,c(1,2,5,6,3,4)]
-  
-  ## --------------
-  
-  return( list(connectivityPairs=pairwiseConnectivity,
-               connectivityMatrix=as.matrix(pairwiseConnectivitySquare),
-               connectivityGraph=graph.obj,
-               sitesConnected=sitesConnected,
-               sitesNotConnected=sitesNotConnected) )
-  
+    ## --------------
+    
+    pairwiseConnectivity <- as.data.frame(pairwiseConnectivity)
+    pairwiseConnectivitySquare <- as.matrix(pairwiseConnectivitySquare)
+    ## --------------
+    
+    return( list(connectivityPairs=pairwiseConnectivity,
+                 connectivityMatrix=pairwiseConnectivitySquare,
+                 connectivityGraph=graph.obj,
+                 featuresConnected=featuresConnected,
+                 featuresNotConnected=featuresNotConnected,
+                 hexagonsConnected=hexagonsConnected,
+                 hexagonsNotConnected=hexagonsNotConnected) )
+    
 }

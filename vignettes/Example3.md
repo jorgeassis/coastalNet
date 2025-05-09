@@ -8,6 +8,7 @@ Cleans the R environment and forces garbage collection to ensure a clean workspa
 
 ```r 
 # Clean environment and load packages
+closeAllConnections()
 rm(list = ls())
 gc(reset=TRUE)
 library(coastalNet)
@@ -31,7 +32,7 @@ download.file("https://figshare.com/ndownloader/files/47592257", "Future.tif", q
 presentDayRangeRaster <- rast("presentDay.tif")
 futureRangeRaster <- rast("Future.tif")
 
-# Remove cells of no present-day distribution
+# Remove cells of no suitable habitats distribution
 presentDayRangeRaster[presentDayRangeRaster == 0] <- NA
 futureRangeRaster[futureRangeRaster == 0] <- NA
 
@@ -47,11 +48,16 @@ It then identifies hexagon IDs representing both present-day locations and proje
 
 ```r 
 # Load database
-oceanographicConnectivity <- getDataBase(myFolder="Database", overwrite=FALSE)
+oceanographicConnectivity <- getDataBase()
+
+# Load hexagons (i.e., source and sink locations)
+hexagonCells <- loadHexagons()
+
+# Combine the distribution records of present and future conditions
+combinedRange <- unique(rbind(presentDayRange,futureRange))
 
 # Get hexagon IDs that define the study region
-combinedRange <- unique(rbind(presentDayRange,futureRange))
-hexagonIDRegion <- getHexagonID(obj=combinedRange, level="extent", buffer=5, print=TRUE)
+hexagonIDRegion <- getHexagonID(obj=combinedRange, hexagonCells=hexagonCells, level="extent", buffer=5, print=TRUE)
 ```
 
 <img src="../img/Example3_img_1.png" alt="Hexagon IDs (in black) defining the study region" style="width:520px;"/>
@@ -63,9 +69,9 @@ hexagonIDRegion <- getHexagonID(obj=combinedRange, level="extent", buffer=5, pri
 # Get connectivity events for the study region (all years, all months, all days, 30 days period)
 connectivityEvents <- getConnectivityEvents(connectivity=oceanographicConnectivity,hexagonID=hexagonIDRegion, period=30 )
 
-# Get hexagon IDs of the sampling sites
-hexagonIDSitesFrom <- getHexagonID(obj=presentDayRange, level="site", buffer=0, print=FALSE)
-hexagonIDSitesTo <- getHexagonID(obj=futureRange, level="site", buffer=0, print=FALSE)
+# Get hexagon IDs of the distribution sites
+hexagonIDSitesFrom <- getHexagonID(obj=presentDayRange, hexagonCells=hexagonCells, level="site", buffer=0, print=FALSE)
+hexagonIDSitesTo <- getHexagonID(obj=futureRange, hexagonCells=hexagonCells, level="site", buffer=0, print=FALSE)
 
 # Get pairwise connectivity estimates between coordinate sites
 pairwiseConnectivity <- getPairwiseConnectivity(connectivityEvents, hexagonIDFrom=hexagonIDSitesFrom, hexagonIDTo=hexagonIDSitesTo, connType="Forward", value="Probability", steppingStone=FALSE)

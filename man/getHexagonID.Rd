@@ -4,7 +4,15 @@
 \alias{getHexagonID}
 \title{Find Hexagon IDs for Spatial Objects or Coordinates}
 \usage{
-getHexagonID(obj, level = "extent", buffer = 0, print = FALSE)
+getHexagonID(
+  obj,
+  level = "extent",
+  hexagonCells = NULL,
+  groupByFeature = TRUE,
+  groupByFeatureName = NULL,
+  buffer = 0,
+  print = FALSE
+)
 }
 \arguments{
 \item{obj}{A spatial object from which to extract hexagon IDs. It can be one of the following classes:
@@ -18,10 +26,16 @@ getHexagonID(obj, level = "extent", buffer = 0, print = FALSE)
 
 \item{level}{A character string specifying the extraction level. Options are:
 \itemize{
-\item 'extent': Extract hexagon IDs that intersect with the bounding box of the input object (potentially expanded by the 'buffer').
-\item 'site': Extract hexagon IDs that contain the individual points within the input object.
-\item 'centroid': Extract the hexagon ID that contains the centroid of the input object.
+\item 'extent': Extract hexagon IDs that are within with the bounding box of the input object (potentially expanded by the 'buffer').
+\item 'site': Extract hexagon IDs that are within the individual spatial objects (typically points, or polygons) of the input object.
+\item 'centroid': Extract the hexagon ID that is the centroid of the spatial objects (typically polygons) of the input object
 }}
+
+\item{hexagonCells}{An sf object defining the hexagons that define the source and sink locations of connectivity retrieved from loadHexagons function.}
+
+\item{groupByFeature}{Logical. If TRUE, hexagon IDs are grouped or aggregated by each input spatial feature (typically polygons). Defaults to TRUE.}
+
+\item{groupByFeatureName}{The column name of the attribute table of the object spatial object from which to extract hexagon IDs.}
 
 \item{buffer}{(Optional) A numeric value indicating the buffer distance (in degrees) to expand the bounding box when 'level = "extent"'. Defaults to 0 (no buffer).}
 

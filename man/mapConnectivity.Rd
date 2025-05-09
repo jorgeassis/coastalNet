@@ -4,7 +4,7 @@
 \alias{mapConnectivity}
 \title{Visualize Pairwise Connectivity on a Map}
 \usage{
-mapConnectivity(connectivityPairs = NULL, print = FALSE)
+mapConnectivity(connectivityPairs = NULL, hexagonCells = NULL, print = FALSE)
 }
 \arguments{
 \item{connectivityPairs}{A data frame containing pairwise connectivity results. It should have the following columns:
@@ -15,6 +15,8 @@ mapConnectivity(connectivityPairs = NULL, print = FALSE)
 \item 'ToHexagon' (character): The hexagon ID of the ending point of the connection.
 \item 'Value' (numeric): The connectivity value, used to determine the visual representation (e.g., line thickness or color) of the connection.
 }}
+
+\item{hexagonCells}{An sf object defining the hexagons that define the source and sink locations of connectivity retrieve from loadHexagons function.}
 
 \item{print}{(Optional) A logical flag. If 'TRUE', the map is displayed directly. Defaults to 'FALSE'.}
 }

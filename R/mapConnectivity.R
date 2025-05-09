@@ -8,6 +8,7 @@
 #'   * 'FromHexagon' (character): The hexagon ID of the starting point of the connection.
 #'   * 'ToHexagon' (character): The hexagon ID of the ending point of the connection.
 #'   * 'Value' (numeric): The connectivity value, used to determine the visual representation (e.g., line thickness or color) of the connection.
+#' @param hexagonCells An sf object defining the hexagons that define the source and sink locations of connectivity retrieve from loadHexagons function.
 #' @param print (Optional) A logical flag. If 'TRUE', the map is displayed directly. Defaults to 'FALSE'.
 #'
 #' @return A list containing:
@@ -31,20 +32,25 @@
 #' @importFrom dplyr %>% 
 #' @export mapConnectivity
 
-mapConnectivity <- function(connectivityPairs=NULL, print=FALSE) {
-  
+mapConnectivity <- function(connectivityPairs=NULL, hexagonCells=NULL , print=FALSE) {
+
   if( is.null(connectivityEvents)) { stop("The connectivityPairs parameter is required.") }
-  if( class(connectivityPairs)[1] != "data.frame" ) { stop("The connectivityPairs parameter must be of class data.frame.") }
+  if( is.null(hexagonCells)) { stop("The hexagonCells parameter is required.") }
+  if( ! "data.frame" %in% class(connectivityPairs) ) { stop("The connectivityPairs parameter must be of class data.frame.") }
+  if( ! "sf" %in% class(hexagonCells) ) { stop("The hexagonCells parameter must be of class sf") }
   
   cat("\n")
   cat("# ---------------------------------------------","\n")
   cat("Map connectivity between pairs of sites","\n")
   cat("# ---------------------------------------------","\n")
   
-  data("referenceTable")
-  data("hexagonCells")
-  
   options(warn=-1)
+  
+  hexagonCellsCoords <- st_coordinates(st_centroid(hexagonCells))
+  
+  referenceTable <- data.frame( cellID = as.character(as.data.frame(hexagonCells)[,"ID"]),
+                                longitude = hexagonCellsCoords[,"X"],
+                                latitude = hexagonCellsCoords[,"Y"])
   
   # Get pairwise connectivity between sites
   connectivityPairs <- connectivityPairs[connectivityPairs$From != connectivityPairs$To, ]
@@ -56,13 +62,10 @@ mapConnectivity <- function(connectivityPairs=NULL, print=FALSE) {
   
   # Compute matching pairs
   
-  hexagonCellsCoord <- data.frame(st_coordinates( st_centroid(hexagonCells) ))
-  hexagonCellsCoord$ID <- hexagonCells$ID
-  
-  connectivityPairs[, "hexagonsFromLon"] <- hexagonCellsCoord[match(connectivityPairs$FromHexagon,hexagonCellsCoord$ID),1]
-  connectivityPairs[, "hexagonsFromLat"] <- hexagonCellsCoord[match(connectivityPairs$FromHexagon,hexagonCellsCoord$ID),2]
-  connectivityPairs[, "hexagonsToLon"] <- hexagonCellsCoord[match(connectivityPairs$ToHexagon,hexagonCellsCoord$ID),1]
-  connectivityPairs[, "hexagonsToLat"] <- hexagonCellsCoord[match(connectivityPairs$ToHexagon,hexagonCellsCoord$ID),2]
+  connectivityPairs[, "hexagonsFromLon"] <- referenceTable[match(connectivityPairs$From,referenceTable$cellID),"longitude"]
+  connectivityPairs[, "hexagonsFromLat"] <- referenceTable[match(connectivityPairs$From,referenceTable$cellID),"latitude"]
+  connectivityPairs[, "hexagonsToLon"] <- referenceTable[match(connectivityPairs$To,referenceTable$cellID),"longitude"]
+  connectivityPairs[, "hexagonsToLat"] <- referenceTable[match(connectivityPairs$To,referenceTable$cellID),"latitude"]
   
   connectivityPairs <- connectivityPairs[sort(connectivityPairs$Value, index.return = T, decreasing = FALSE)$ix, ]
   
@@ -79,7 +82,6 @@ mapConnectivity <- function(connectivityPairs=NULL, print=FALSE) {
   
   lineConnections <- st_as_sf(do.call(rbind,lineConnections))
   lineConnections$Value <- connectivityPairs[, "Value"]
-  
   st_crs(lineConnections) <- 4326
   
   hexagonCells.i <- hexagonCells[hexagonCells$ID %in% unique(c(connectivityPairs$FromHexagon,connectivityPairs$ToHexagon)), 1]
@@ -104,3 +106,4 @@ mapConnectivity <- function(connectivityPairs=NULL, print=FALSE) {
   return(list(mappingData=connectivityPairs,lineConnections=lineConnections, hexagonCells=hexagonCells.i))
   
 }
+

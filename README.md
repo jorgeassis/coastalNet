@@ -1,4 +1,6 @@
-<img src="img/github-header-image.png" alt="image" width="100%" height="auto">
+# coastalNet
+
+## Coastal oceanographic connectivity at the global scale derived from biophysical modeling
 
 The coastalNet R package offers a suite of tools for the analysis of oceanographic connectivity. Developed to address the complex dynamics of how ocean currents influence the distribution, evolution, and conservation of marine species, coastalNet leverages high-resolution ocean current data, biophysical modeling, and graph theory to offer a comprehensive toolkit for marine ecology research.
 
@@ -106,17 +108,9 @@ The forth case explores oceanographic connectivity between regions of the Northe
 ## Citation
 
 The coastalNet R is documented in on peer reviewed articles that you should cite:<br>
-Anonimous for peer-review (2024) Coastal oceanographic connectivity estimates at the global scale.
-
+Assis, J., Fragkopoulou, E., Serrão, E. A., & Araújo, M. B. (2025). Coastal oceanographic connectivity at the global scale: a dataset of pairwise probabilities and travel times derived from biophysical modeling. Scientific Data, 12(1), 737. https://doi.org/10.1038/s41597-025-05060-2
 <br>
 
 ## License
 
 This work is licensed under the Creative Commons Attribution 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/.
-
-<br>
-
-## Acknowledgments
-
-Logo: DALL.E<br>
-Github Header: https://leviarista.github.io/github-profile-header-generator/

@@ -9,9 +9,12 @@
 #'   * 'matrix': A matrix with at least two columns representing longitude and latitude coordinates.
 #'   * 'numeric': A numeric vector of length 4 representing the extent of an area (xmin, xmax, ymin, ymax).
 #' @param level A character string specifying the extraction level. Options are:
-#'   * 'extent': Extract hexagon IDs that intersect with the bounding box of the input object (potentially expanded by the 'buffer').
-#'   * 'site': Extract hexagon IDs that contain the individual points within the input object. 
-#'   * 'centroid': Extract the hexagon ID that contains the centroid of the input object.
+#'   * 'extent': Extract hexagon IDs that are within with the bounding box of the input object (potentially expanded by the 'buffer').
+#'   * 'site': Extract hexagon IDs that are within the individual spatial objects (typically points, or polygons) of the input object. 
+#'   * 'centroid': Extract the hexagon ID that is the centroid of the spatial objects (typically polygons) of the input object
+#' @param hexagonCells An sf object defining the hexagons that define the source and sink locations of connectivity retrieved from loadHexagons function.
+#' @param groupByFeature Logical. If TRUE, hexagon IDs are grouped or aggregated by each input spatial feature (typically polygons). Defaults to TRUE.
+#' @param groupByFeatureName The column name of the attribute table of the object spatial object from which to extract hexagon IDs.
 #' @param buffer (Optional) A numeric value indicating the buffer distance (in degrees) to expand the bounding box when 'level = "extent"'. Defaults to 0 (no buffer).
 #' @param print (Optional) A logical flag. If 'TRUE', a map visualizing the selected hexagons is displayed. Defaults to 'FALSE'.
 #'
@@ -43,9 +46,11 @@
 #' 
 #' @export getHexagonID 
 
-getHexagonID <- function(obj, level="extent", buffer=0, print=FALSE){
+getHexagonID <- function(obj, level="extent", hexagonCells=NULL, groupByFeature=TRUE, groupByFeatureName=NULL, buffer=0, print=FALSE){
   
-  data("referenceTable")
+  if( is.null(hexagonCells)) { stop("The hexagonCells parameter is missing.")}
+  if( ! "sf" %in% class(hexagonCells) ) { stop("The hexagonCells object is not of class sf.")}
+  if( ! "ID" %in% names(hexagonCells) ) { stop("The hexagonCells object does not contain the required ID infomraiton on the attribute table.")}
   
   cat("\n")
   cat("# ---------------------------------------------","\n")
@@ -53,13 +58,21 @@ getHexagonID <- function(obj, level="extent", buffer=0, print=FALSE){
   
   options(warn=-1)
   
+  hexagonCellsCoords <- st_coordinates(st_centroid(hexagonCells))
+  
+  referenceTable <- data.frame( cellID = as.data.frame(hexagonCells)[,"ID"],
+                                longitude = hexagonCellsCoords[,"X"],
+                                latitude = hexagonCellsCoords[,"Y"])
+  
   if( class(obj)[1] == "data.frame" ) { if ( ncol(obj) > 2 ) { siteNames <- obj[,3] } }
   
   if( class(obj)[1] == "sfc_POLYGON" | class(obj)[1] == "sfc" ) { obj <- st_sf(obj) }
   
   if( class(obj)[1] == "sf" ) {
     
-    siteNames <- as.data.frame(obj)[,1]
+    siteNames <- as.data.frame(obj)[,1] 
+    
+    if( !is.null(groupByFeatureName) ) { siteNames <- as.data.frame(obj)[,groupByFeatureName] }
     
     if( class(siteNames)[1] == "numeric" ) { 
       siteNames <- as.character(1:length(siteNames))
@@ -164,7 +177,6 @@ getHexagonID <- function(obj, level="extent", buffer=0, print=FALSE){
   
   if( print ) { 
     
-    data("hexagonCells")
     hexagonCellsID <- hexagonCells[hexagonCells$ID %in% unlist(cellID), 1]
     
     plot1 <- ggplot() + geom_sf(data = hexagonCells, color="#b4b4b4", fill = "#b4b4b4") +
@@ -184,8 +196,15 @@ getHexagonID <- function(obj, level="extent", buffer=0, print=FALSE){
   
   if( exists("siteNames") ) { if( length(siteNames) == length(cellID) ) { names(cellID) <- siteNames } }
   
+  if( ! groupByFeature ) { cellID <- sapply(unlist(cellID),function(x) as.list(x)) }
+  
+  if(is.null(names(cellID))) { names(cellID) <- as.character(1:length(cellID)) }
+  
   cat("# \n")
   cat("# Number of hexagon sites:",length( unique(unlist(cellID)) ),"\n")
+  
+  cat("# Hexagon sites grouped by feature:",groupByFeature,"\n")
+  cat("# Number of features:",length(cellID),"\n")
   
   return(cellID)
   
