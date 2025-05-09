@@ -1,4 +1,4 @@
-### coastalNet, a dataset of coastal oceanographic connectivity at the global scale derived from biophysical modeling
+### coastalNet, a dataset of coastal oceanographic connectivity at the global scale
 
 The coastalNet R package offers a suite of tools for the analysis of oceanographic connectivity. Developed to address the complex dynamics of how ocean currents influence the distribution, evolution, and conservation of marine species, coastalNet leverages high-resolution ocean current data, biophysical modeling, and graph theory to offer a comprehensive toolkit for marine ecology research.
 
