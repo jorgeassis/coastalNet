@@ -43,6 +43,13 @@ The package integrates with several external R packages for spatial data manipul
 
 <br>
 
+## Citation
+
+The coastalNet R is documented in on peer reviewed articles that you should cite:<br>
+Assis, J., Fragkopoulou, E., Serrão, E. A., & Araújo, M. B. (2025). Coastal oceanographic connectivity at the global scale: a dataset of pairwise probabilities and travel times derived from biophysical modeling. Scientific Data, 12(1), 737. https://doi.org/10.1038/s41597-025-05060-2
+
+<br>
+
 ## Potential applications
 
 The applications of coastalNet's oceanographic connectivity estimates are wide-ranging and advance marine sciences:
@@ -101,12 +108,6 @@ The forth case explores oceanographic connectivity between regions of the Northe
 
 [R code for case 4](vignettes/Example4.md)
 
-<br>
-
-## Citation
-
-The coastalNet R is documented in on peer reviewed articles that you should cite:<br>
-Assis, J., Fragkopoulou, E., Serrão, E. A., & Araújo, M. B. (2025). Coastal oceanographic connectivity at the global scale: a dataset of pairwise probabilities and travel times derived from biophysical modeling. Scientific Data, 12(1), 737. https://doi.org/10.1038/s41597-025-05060-2
 <br>
 
 ## License
