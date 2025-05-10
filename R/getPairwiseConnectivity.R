@@ -46,7 +46,7 @@
 #'                                      parallelCores = 2)
 #' }
 #' 
-#' @importFrom igraph graph.edgelist get.shortest.paths delete.edges simplify as.undirected E
+#' @importFrom igraph graph.edgelist delete_edges get.shortest.paths delete.edges simplify as.undirected E
 #' @import data.table
 #' @import parallel doParallel foreach
 #' @importFrom dplyr %>%  
