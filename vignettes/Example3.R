@@ -104,6 +104,4 @@ plot3 <- ggplot() +
                           axis.ticks.y=element_blank(), legend.position = "none") +
   coord_sf()
 
-pdf(file="../../Example 3 1.pdf", width=15, height=8)
 grid.arrange(plot1, plot2, plot3, ncol = 3)
-dev.off()

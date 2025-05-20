@@ -35,7 +35,7 @@ getHexagonID(
 
 \item{groupByFeature}{Logical. If TRUE, hexagon IDs are grouped or aggregated by each input spatial feature (typically polygons). Defaults to TRUE.}
 
-\item{groupByFeatureName}{The column name of the attribute table of the object spatial object from which to extract hexagon IDs.}
+\item{groupByFeatureName}{(Optional) The column name of the attribute table of the spatial object from which input spatial feature are grouped or aggregated.}
 
 \item{buffer}{(Optional) A numeric value indicating the buffer distance (in degrees) to expand the bounding box when 'level = "extent"'. Defaults to 0 (no buffer).}
 

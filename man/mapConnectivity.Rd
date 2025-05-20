@@ -4,9 +4,18 @@
 \alias{mapConnectivity}
 \title{Visualize Pairwise Connectivity on a Map}
 \usage{
-mapConnectivity(connectivityPairs = NULL, hexagonCells = NULL, print = FALSE)
+mapConnectivity(
+  obj = NULL,
+  featureName = NULL,
+  connectivityPairs = NULL,
+  print = FALSE
+)
 }
 \arguments{
+\item{obj}{A spatial object involved in the connectivity estimates. It must be an 'sf' object representing points or polygons, or a data.frame or matrix with two columns representing longitude and latitude locations.}
+
+\item{featureName}{A vector with the name of the elements of the spatial object or, the column name of the attribute table of the spatial object used to grouped or aggregate input spatial feature.}
+
 \item{connectivityPairs}{A data frame containing pairwise connectivity results. It should have the following columns:
 \itemize{
 \item 'From' (character): The name or ID of the "from" region.
@@ -16,8 +25,6 @@ mapConnectivity(connectivityPairs = NULL, hexagonCells = NULL, print = FALSE)
 \item 'Value' (numeric): The connectivity value, used to determine the visual representation (e.g., line thickness or color) of the connection.
 }}
 
-\item{hexagonCells}{An sf object defining the hexagons that define the source and sink locations of connectivity retrieve from loadHexagons function.}
-
 \item{print}{(Optional) A logical flag. If 'TRUE', the map is displayed directly. Defaults to 'FALSE'.}
 }
 \value{
@@ -25,7 +32,7 @@ A list containing:
 \itemize{
 \item 'mappingData': The input 'connectivityPairs' data frame, augmented with longitude ('hexagonsFromLon', 'hexagonsToLon') and latitude ('hexagonsFromLat', 'hexagonsToLat') coordinates for the hexagons.
 \item 'lineConnections': An 'sf' object representing the line connections between hexagons, with the 'Value' column used for visualization.
-\item 'hexagonCells': An 'sf' object containing the hexagon polygons involved in the connections.
+\item 'objCentroid': An 'sf' object containing the centroids spatial object involved in the connections.
 }
 }
 \description{

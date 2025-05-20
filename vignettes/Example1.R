@@ -73,10 +73,10 @@ model <- lm(connectivity ~ differentiation, data = modelDataFrame)
 r2 <- summary(model)$adj.r.squared
 Pearson <- cor(modelDataFrame$connectivity, modelDataFrame$differentiation)
 
-plot1 <- ggplot() + 
+ggplot() + 
   geom_point(data = modelDataFrame, aes(x=connectivity, y=differentiation), color="#000000", fill="#000000", size=2 ) + 
   geom_point(data = modelDataFrame, aes(x=connectivity, y=differentiation), color="white", fill="white", size=1 ) + 
-  geom_smooth(data = modelDataFrame, method=lm, aes(x=connectivity, y=differentiation), linetype = "dashed", fill="#c5593c", col='black', size=0.5, alpha = 0.5) + 
+  geom_smooth(data = modelDataFrame, method=lm, aes(x=connectivity, y=differentiation), linetype = "dashed", fill="#c5593c", col='black', linewidth=0.5, alpha = 0.5) + 
   xlab(paste0("Oceanographic connectivity [ log(probability) ]")) + ylab("Population genetic differentiation (Jost D)") +
   theme_minimal() + 
   theme( panel.grid.major = element_blank() ,
@@ -86,31 +86,21 @@ plot1 <- ggplot() +
          legend.title = element_blank()) +
   annotate("label", alpha = 0.5, label.padding=unit(0.5, "lines"), x = -77, y = 0.2, hjust=0,vjust=1 , label = paste0("Adjusted R2: ", format(round(r2, 3), nsmall = 3),"\nPearson's Corr.: ",format(round(Pearson, 3), nsmall = 3)))
 
-pdf(file="../../Example 1 1.pdf", width=8, height=8)
-plot1
-dev.off()
-
 # ---------------------
 
 # Map oceanographic connectivity between populations
-mappedConnectivity <- mapConnectivity(connectivityPairs=pairwiseConnectivity$connectivityPairs,hexagonCells=hexagonCells)
+mappedConnectivity <- mapConnectivity(obj = laminariaRecords, featureName = as.character(unlist(hexagonIDSites)) , connectivityPairs=pairwiseConnectivity$connectivityPairs)
 
 # Load the worldmap and crop to the atudy region
 worldMap <- ne_countries(scale = "medium", returnclass = "sf")
 worldMap <- st_crop(worldMap,mappedConnectivity$lineConnections)
 
-# Get hexagon IDs that retrieved oceanographic connectivity estimates
-hexagonIDConnected <- unique(c(mappedConnectivity$mappingData$From,mappedConnectivity$mappingData$From))
-
-# Get a data.frame of the location of hexagons that retrieved oceanographic connectivity estimates
-hexagonCellsConnected <- hexagonCells[hexagonCells$ID %in% hexagonIDConnected,1]
-hexagonCellsConnected <- st_coordinates(st_centroid(hexagonCellsConnected))
-
 # Make a plot of the oceanographic connectivity between populations
-plot2 <- ggplot() + 
+ggplot() + 
   geom_sf(data = worldMap , fill="#CDCDCD", colour = "#9E9E9E" , size=0.25) +
-  geom_point(data = hexagonCellsConnected, aes(x = X, y = Y), colour = "#000000",size=2.5) +
-  geom_point(data = hexagonCellsConnected, aes(x = X, y = Y), colour = "#FFFFFF",size=1.25) +
+  geom_sf(data = worldMap , fill="#CDCDCD", colour = "#9E9E9E" , size=0.25) +
+  geom_sf(data = mappedConnectivity$objCentroid, colour = "#000000",size=3.5) +
+  geom_sf(data = mappedConnectivity$objCentroid, colour = "#FFFFFF",size=1.75) +
   geom_sf(data = mappedConnectivity$lineConnections , linewidth = 0.35 , aes(colour = Value), alpha=0.75) +
   scale_color_gradientn(colours=rev(magma(6)),na.value = NA, trans = "log") +
   theme_minimal() + theme(axis.title.x=element_blank(),
@@ -118,7 +108,3 @@ plot2 <- ggplot() +
                           axis.title.y=element_blank(),
                           axis.ticks.y=element_blank(), legend.position = "none") +
   coord_sf()
-
-pdf(file="../../Example 1 2.pdf", width=8, height=8)
-plot2
-dev.off()

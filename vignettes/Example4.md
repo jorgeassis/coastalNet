@@ -14,6 +14,8 @@ library(coastalNet)
 library(rnaturalearth)
 library(sf)
 library(pheatmap)
+library(ggplot2)
+library(viridis)
 ```
 
 ### Data Loading
@@ -77,25 +79,23 @@ The outcomes are visualized on a heatmap and also on a map.
 
 ```r
 # Heat map of pairwise connectivity
-plot1 <- pheatmap(pairwiseConnectivityRegions, display_numbers = FALSE, angle_col=0, cluster_row = FALSE, cluster_cols= FALSE, main = "Heatmap of pairwise connectivity" )
-
-plot1
-
-# Map oceanographic connectivity between populations
-mappedConnectivity <- mapConnectivity(connectivityPairs=pairwiseConnectivity$connectivityPairs,hexagonCells=hexagonCells)
-
-# Load the worldmap and crop to the atudy region
-worldMap <- ne_countries(scale = "medium", returnclass = "sf")
-worldMap <- st_crop(worldMap,mappedConnectivity$lineConnections)
+heatmap(pairwiseConnectivityRegions, display_numbers = FALSE, angle_col=0, cluster_row = FALSE, cluster_cols= FALSE, main = "Heatmap of pairwise connectivity" )
 
 # Get a data.frame of the location of hexagons for which oceanographic connectivity was retrieved
 hexagonCellsConnected <- hexagonCells[hexagonCells$ID %in% unlist(hexagonIDCombinedRange),1]
 hexagonCellsConnected <- st_coordinates(st_centroid(hexagonCellsConnected))
 
-plot2 <- ggplot() + 
+# Map oceanographic connectivity between populations
+mappedConnectivity <- mapConnectivity(obj = hexagonCellsConnected, featureName = as.character(hexagonIDCombinedRange) , connectivityPairs=pairwiseConnectivity$connectivityPairs)
+
+# Load the worldmap and crop to the atudy region
+worldMap <- ne_countries(scale = "medium", returnclass = "sf")
+worldMap <- st_crop(worldMap,mappedConnectivity$lineConnections)
+
+ggplot() + 
   geom_sf(data = worldMap , fill="#CDCDCD", colour = "#9E9E9E" , size=0.25) +
-  geom_point(data = hexagonCellsConnected, aes(x = X, y = Y), colour = "#000000",size=2.5) +
-  geom_point(data = hexagonCellsConnected, aes(x = X, y = Y), colour = "#FFFFFF",size=1.25) +
+  geom_sf(data = mappedConnectivity$objCentroid, colour = "#000000",size=2.5) +
+  geom_sf(data = mappedConnectivity$objCentroid, colour = "#FFFFFF",size=1.25) +
   geom_sf(data = mappedConnectivity$lineConnections , linewidth = 0.35 , aes(colour = Value), alpha=0.75) +
   scale_color_gradientn(colours=rev(magma(6)),na.value = NA, trans = "log") +
   theme_minimal() + theme(axis.title.x=element_blank(),
@@ -103,7 +103,4 @@ plot2 <- ggplot() +
                           axis.title.y=element_blank(),
                           axis.ticks.y=element_blank(), legend.position = "none") +
   coord_sf()
-  
-plot2
-
 ```

@@ -277,6 +277,9 @@ getPairwiseConnectivity <- function(connectivityEvents=NULL, hexagonIDFrom=NULL,
     rownames(pairwiseConnectivitySquareSteps) <- connectivityEventsAggSquareFromNames
     colnames(pairwiseConnectivitySquareSteps) <- connectivityEventsAggSquareToNames
     
+    pairwiseConnectivitySquare <- pairwiseConnectivitySquare[match(as.character(unlist(hexagonIDFrom)),rownames(pairwiseConnectivitySquare)),match(as.character(unlist(hexagonIDTo)),colnames(pairwiseConnectivitySquare))]
+    pairwiseConnectivitySquareSteps <- pairwiseConnectivitySquareSteps[match(as.character(unlist(hexagonIDFrom)),rownames(pairwiseConnectivitySquareSteps)),match(as.character(unlist(hexagonIDTo)),colnames(pairwiseConnectivitySquareSteps))]
+    
   }
   
   # Produce results at the feature level. Aggregate polygon at feature
@@ -304,12 +307,12 @@ getPairwiseConnectivity <- function(connectivityEvents=NULL, hexagonIDFrom=NULL,
     rownames(pairwiseConnectivitySquareSteps) <- as.character(sapply(1:length(hexagonIDFrom) , function(x) ifelse(!is.null(names(hexagonIDFrom)[x]), names(hexagonIDFrom)[x] , x) ))
     colnames(pairwiseConnectivitySquareSteps) <- as.character(sapply(1:length(hexagonIDTo) , function(x) ifelse(!is.null(names(hexagonIDTo)[x]), names(hexagonIDTo)[x] , x) ))
     
+    pairwiseConnectivitySquare <- pairwiseConnectivitySquare[match(as.character(names(hexagonIDFrom)),rownames(pairwiseConnectivitySquare)),match(as.character(names(hexagonIDTo)),colnames(pairwiseConnectivitySquare))]
+    pairwiseConnectivitySquareSteps <- pairwiseConnectivitySquareSteps[match(as.character(names(hexagonIDFrom)),rownames(pairwiseConnectivitySquareSteps)),match(as.character(names(hexagonIDTo)),colnames(pairwiseConnectivitySquareSteps))]
+    
   }
   
   # -----------
-  
-  pairwiseConnectivitySquare <- pairwiseConnectivitySquare[match(as.character(names(hexagonIDFrom)),rownames(pairwiseConnectivitySquare)),match(as.character(names(hexagonIDTo)),colnames(pairwiseConnectivitySquare))]
-  pairwiseConnectivitySquareSteps <- pairwiseConnectivitySquareSteps[match(as.character(names(hexagonIDFrom)),rownames(pairwiseConnectivitySquareSteps)),match(as.character(names(hexagonIDTo)),colnames(pairwiseConnectivitySquareSteps))]
   
   pairwiseConnectivitySquare[is.na(pairwiseConnectivitySquare)] <- 0
   pairwiseConnectivitySquareSteps[is.na(pairwiseConnectivitySquareSteps)] <- 0

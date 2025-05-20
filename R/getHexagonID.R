@@ -14,7 +14,7 @@
 #'   * 'centroid': Extract the hexagon ID that is the centroid of the spatial objects (typically polygons) of the input object
 #' @param hexagonCells An sf object defining the hexagons that define the source and sink locations of connectivity retrieved from loadHexagons function.
 #' @param groupByFeature Logical. If TRUE, hexagon IDs are grouped or aggregated by each input spatial feature (typically polygons). Defaults to TRUE.
-#' @param groupByFeatureName The column name of the attribute table of the object spatial object from which to extract hexagon IDs.
+#' @param groupByFeatureName (Optional) The column name of the attribute table of the spatial object from which input spatial feature are grouped or aggregated.
 #' @param buffer (Optional) A numeric value indicating the buffer distance (in degrees) to expand the bounding box when 'level = "extent"'. Defaults to 0 (no buffer).
 #' @param print (Optional) A logical flag. If 'TRUE', a map visualizing the selected hexagons is displayed. Defaults to 'FALSE'.
 #'
